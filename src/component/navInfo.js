@@ -1,0 +1,32 @@
+export default [
+  {
+    key:1,
+    title:'首页',
+    icon:'home',
+    path:'/admin/index'
+  },
+  {
+    key:2,
+    title:'管理页管理',
+    icon:'Dashboard',
+    path:'/admin/administrator',
+    children:[
+      {
+      key:2-1,
+      title:'成员信息页',
+      path:'/admin/info'
+      },
+      {
+        key:2-2,
+        title:"修改页",
+        path:'/admin/change',
+      }
+    ]
+  },
+  {
+    key:3,
+    title:'表单页',
+    icon:'sheet',
+    path:'/admin/biaodan'
+  },
+]

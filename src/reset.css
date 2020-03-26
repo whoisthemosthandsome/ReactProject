@@ -1,0 +1,70 @@
+﻿body,h1,h2,h3,h4,h5,h6,p,ul,ol,dl,dd,input,textarea,button{
+	padding: 0;
+	margin:0;
+}
+*{
+	/*页面点击链接时会出现高亮框，此代码用来解决*/
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	/*解决IOS上面的按钮显示问题*/
+    -webkit-appearance: none;
+}
+img{
+	vertical-align: top;
+	border: 0;
+	/*vertical-align: top/middle/bottom;*/
+}
+a{
+	text-decoration: none;
+	color: inherit;
+}
+li{
+	list-style: none;
+}
+textarea{
+	resize:none;
+}
+input,textarea,button,select{
+	outline: none;
+	color: inherit;
+	font-size: inherit;
+	font-family: inherit;
+}
+input[type="button"],input[type="submit"],input[type="reset"]{
+	cursor: pointer;
+}
+html{
+	/*font-family: "微软雅黑","宋体",Arial;
+	font-size: 14px;
+	line-height: 24px;*/
+	color: #333;
+	font:14px/1.5 "微软雅黑","宋体",Arial;
+	font-size: calc(100vw/3.75);
+}
+
+
+/*单行省略*/
+.sl{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow:ellipsis;
+}
+.sl2{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+/*万能清除法*/
+.cl:after{
+	content: "";
+	display: block;
+	clear: both;
+
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+}
+.cl{
+	zoom:1;
+}
