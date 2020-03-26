@@ -55,8 +55,8 @@ Tower
 
 ### 接口问题
 1. node 里面写了cors跨域 前端不用代理跨域  可以直接调接口 
-  接口路径前面需要加上 localhost:3000
-2. ultils 里面有一个baseUrl.js 抛出了localhost:3000 
+  接口路径前面需要加上 localhost:3001
+2. ultils 里面有一个baseUrl.js 抛出了localhost:3001
   调接口时可以直接引入 拼接在接口路径前面
 3. 举例 
   后端接口为 /banner/get
@@ -70,7 +70,7 @@ Tower
     }
   }
   export default new bannerApi()
-  
+
 ### 图片显示
 同调接口 在数据库获取的路径前面 拼接baseUrl
 举例
