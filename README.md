@@ -52,3 +52,24 @@ Tower
 4.轮播 /admin/banner key=ban-
 5.摄影师数据 /admin/photer key=pho-
 6.用户 /admin/user key=user- 评价 /admin/user/how key=how- 预约 /admin/user/book key=book-
+
+### 接口问题
+1. node 里面写了cors跨域 前端不用代理跨域  可以直接调接口 
+  接口路径前面需要加上 localhost:3000
+2. ultils 里面有一个baseUrl.js 抛出了localhost:3000 
+  调接口时可以直接引入 拼接在接口路径前面
+3. 举例 
+  后端接口为 /banner/get
+  前端调用时
+  import baseUrl from '../ultils/baseUrl'
+  import axios from '../ultils'
+  class bannerApi {
+    get(){
+      let url = baseUrl + '/banner/get'
+      return axios.post(url)
+    }
+  }
+### 图片显示
+同调接口 在数据库获取的路径前面 拼接baseUrl
+举例
+<img src={baseUrl + url} alt='' />
