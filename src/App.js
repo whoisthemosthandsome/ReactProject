@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './reset.css'
 import './App.css';
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
@@ -38,8 +39,8 @@ function App() {
         
         
       </HashRouter>  
-    </div>
+      </div>
   );
-}
+} 
 
 export default App;
