@@ -14,6 +14,8 @@ import Echart from './pages/echart/echart'
 import Option1 from './component/option1/option1'
 //管理员成员信息
 import AdminInfo from './pages/Administror/adminInfo'
+// 轮播图
+import Banner from './pages/Banner'
 function App() {
   return (
     <div>
@@ -32,6 +34,7 @@ function App() {
                 <Route path='/admin/echart' component={Echart}></Route>
                 <Route path='/admin/Info' component={AdminInfo}></Route>
                 <Route path='/admin/option1' component={Option1}/>
+                <Route path='/admin/banner' component={Banner}></Route>
               </Admin>
             )
           }}/>
