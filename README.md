@@ -69,6 +69,8 @@ Tower
       return axios.post(url)
     }
   }
+  export default new bannerApi()
+  
 ### 图片显示
 同调接口 在数据库获取的路径前面 拼接baseUrl
 举例
