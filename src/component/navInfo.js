@@ -29,4 +29,10 @@ export default [
     icon:'sheet',
     path:'/admin/biaodan'
   },
+  {
+    key:'ban',
+    title:'轮播图',
+    icon:'banner',
+    path:'/admin/banner'
+  },
 ]
