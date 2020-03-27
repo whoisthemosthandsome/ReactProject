@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import baseUrl from '../../ultils/baseUrl'
 import bannerApi from '../../api/bannerApi'
-import { Card, Table, Button, Modal, message, Popconfirm } from 'antd'
+import { Card, Table, Button, Modal, message, Popconfirm, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons';
 class Banner extends Component {
   state = {
     visible: false, // 添加模态框显示隐藏
+    spinning: false, // 加载中动画
     list: [], // 轮播图列表数据
     // 轮播列表表头
     columns: [
@@ -49,24 +50,28 @@ class Banner extends Component {
   }
   // 获取轮播图列表
   getList = async () => {
+    this.setState({spinning: true}) // 开启加载中动画
     let { code, list } = await bannerApi.get()
     if (code) { return false }
     list.reverse() // 翻转数组 最新添加的显示在前面
     this.setState({list})
+    this.setState({spinning: false}) // 关闭加载中动画
   }
   // 初始化轮播图列表
   componentDidMount = async () => {
     this.getList()
   }
   render() {
-    let { columns, list, visible } = this.state
+    let { columns, list, visible, spinning } = this.state
     return (
       <div>
         <Card title='轮播图'>
           <Button type='primary' icon={<PlusOutlined />} onClick={() => {
             this.setState({visible: true})
           }}>添加</Button>
-          <Table columns={columns} dataSource={list} rowKey='_id'></Table>
+          <Spin spinning={spinning}>
+            <Table columns={columns} dataSource={list} rowKey='_id'></Table>
+          </Spin>
         </Card>
         {/* 添加图片模态框 */}
         <Modal
