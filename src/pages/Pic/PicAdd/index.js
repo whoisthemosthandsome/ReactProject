@@ -1,23 +1,24 @@
 import React, { Component } from 'react'
 import picApi from '../../../api/picApi'
+import Style from './index.module.less'
 import { Card, Button, Form, Input, Select, message } from 'antd'
 import { UploadOutlined  } from '@ant-design/icons'
 const layout = {
   labelCol: {
-    span: 6,
+    span: 4,
   },
   wrapperCol: {
     span: 16,
   },
 }
-
 class PicAdd extends Component {
   state = {
     fileList: [], // 图片路径
+    showImgs: [], // 缩略图base64
   }
   // 上传客样照文本
   onFinish = async (value) =>{
-    if(this.state.fileList.length === 0){return message.error('请上传图片')}
+    await this.upload() // 上传图片
     value.imgs = this.state.fileList // 写入图片路径
     let { code, msg } = await picApi.add(value) // 上传请求
     if(code){ message.error(msg) } // 上传失败
@@ -26,17 +27,32 @@ class PicAdd extends Component {
   // 上传图片
   upload = async () => {
     let files = this.refs.files.files // 图片对象
-    if(files.length === 0) {return message.error('请选择图片')} // 为选择图片
     let data = new FormData()
     for (const key in files) {
       data.append('pic', files[key])
     }
     let {code, msg, imgs} = await picApi.uploadPic(data)
-    if(code){ message.error(msg) } // 上传失败
+    if(code){ message.error(msg) } // 上传图片失败
     this.setState({fileList:imgs}) // 上传成功 保存图片路径
-    message.success(msg) // 上传成功
+  }
+  // 显示图片缩略图
+  showImg = () => {
+    this.setState({showImgs:[]})
+    let files = this.refs.files.files // 图片对象
+    for (const key in files) {
+      if (typeof(files[key]) === 'object') {
+        let reader = new FileReader()
+        reader.onload = () => {
+          let showImgs = this.state.showImgs
+          showImgs.push(reader.result)
+          this.setState({showImgs})
+        }
+        reader.readAsDataURL(files[key])
+      }
+    }
   }
   render() {
+    let { showImgs } = this.state
     return (
       <div>
         <Card title='客样照添加'>
@@ -52,16 +68,30 @@ class PicAdd extends Component {
             <Form.Item name={'desc'} label="描述" rules={[{required: true}]}>
               <Input.TextArea />
             </Form.Item>
-            <Form.Item name={'imgs'} label="图片" >
+            <Form.Item name={'imgs'} label="图片" rules={[{required: true}]}>
               <div>
-                <Button onClick={this.upload}>
-                  <UploadOutlined /> Click to Upload
-                </Button>
-                <input type='file' ref='files' multiple/>
+                <div className={Style.uploadBox}>
+                  <Button>
+                   <UploadOutlined /> Click to Upload
+                  </Button>
+                  <input type='file' ref='files'
+                  multiple 
+                  onChange={this.showImg} className={Style.uploadInput}/>
+                </div>
+                <div>
+                  {
+                    showImgs.map((item,index) => {
+                      return(
+                        <img src={item} alt='' key={index}
+                        style={{width:'100px',maxHeight:'100px',margin:'5px 5px 5px 0'}}/>
+                      )
+                    })
+                  }
+                </div>
               </div>
             </Form.Item>
   
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>

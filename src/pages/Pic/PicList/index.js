@@ -13,15 +13,15 @@ class PicList extends Component {
     list: [], // 客样照列表
     // 客样照表头
     columns: [
-      { title: 'title', key:'title' ,dataIndex: 'title', width: 100, fixed: 'left' },
+      { title: '标题', key:'title' ,dataIndex: 'title', width: 100, fixed: 'left' },
       { title: 'id', key:'_id' ,dataIndex: '_id', width: 120 },
-      { title: 'desc', key:'desc' ,dataIndex: 'desc', width: 120  },
-      { title: 'photer', key:'photer' ,dataIndex: 'photer', width: 80  },
-      { title: 'look', key:'look' ,dataIndex: 'look', width: 80  },
-      { title: 'like', key:'like' ,dataIndex: 'like', width: 80  },
-      { title: 'imgs', key:'imgs', width: 290, render: (recode) => {
+      { title: '描述', key:'desc' ,dataIndex: 'desc', width: 120  },
+      { title: '摄影师', key:'photer' ,dataIndex: 'photer', width: 80  },
+      { title: '浏览', key:'look' ,dataIndex: 'look', width: 80  },
+      { title: '点赞', key:'like' ,dataIndex: 'like', width: 80  },
+      { title: '图片', key:'imgs', width: 290, render: (recode) => {
         return(
-          <div>
+          <div style={{maxHeight:'180px', overflow: 'auto'}}>
             {
               recode.imgs.map((item,index) => {
                 let name = 'selUrl' + recode._id // this.state中该条客样照选中的url的变量名
@@ -34,14 +34,12 @@ class PicList extends Component {
                   style = Style.url
                 }
                 return(
-                <p key={index}
-                  onClick={() => {
-                    this.setState({[name]: item}) // 通过改变选中的url 切换缩略图
-                  }}
-                  className={
-                    style
-                  }
-                >{item}</p>)
+                  <p key={index} className={style}
+                    onClick={() => {
+                      this.setState({[name]: item}) // 通过改变选中的url 切换缩略图
+                    }}
+                 >{item}</p>
+                )
               })
             }
           </div>
@@ -94,24 +92,22 @@ class PicList extends Component {
     return (
       <div className={Style.box}>
         <Card title='客样照' className={Style.card}>
-         
+
+          {/* 添加客样照 */}
           <Button type='primary' icon={<PlusOutlined />} onClick={() => {
             this.props.history.push('/admin/picAdd')
           }}>添加客样照</Button>
+
+          {/* 客样照列表 */}
           <Spin spinning={spinning}>
           <Table columns={columns} dataSource={list} rowKey='_id' scroll={{x:900,y:300}} pagination={false}></Table>
           </Spin>
+
+          {/* 分页 */}
           <Pagination showQuickJumper defaultCurrent={page}
-          total={count} pageSize={pageSize}
-          onChange={(page) => {
-            this.setState({page}, () => {
-              this.getListData()
-            })
-            
-          }}
+            total={count} pageSize={pageSize}
+            onChange={(page) => { this.setState({page}, () => { this.getListData() }) }}
           />
-          
-          
         </Card>
       </div>
     );
