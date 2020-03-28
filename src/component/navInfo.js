@@ -35,4 +35,10 @@ export default [
     icon:'banner',
     path:'/admin/banner'
   },
+  {
+    key:'picList',
+    title:'客样照',
+    icon:'banner',
+    path:'/admin/picList'
+  },
 ]

@@ -1,11 +1,7 @@
 import React from 'react';
 
 import './reset.css'
-<<<<<<< HEAD
-// import './App.css';
-=======
 
->>>>>>> 09bc43dc307c29b9eda666a45cb428be71136585
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
 //后台系统主页
 import Admin from './pages/Admin/admin'
@@ -20,6 +16,10 @@ import Option1 from './component/option1/option1'
 import AdminInfo from './pages/Administror/adminInfo'
 // 轮播图
 import Banner from './pages/Banner'
+// 客样照列表
+import PicList from './pages/Pic/PicList'
+// 客样照添加
+import PicAdd from './pages/Pic/PicAdd'
 function App() {
   return (
     <div>
@@ -39,6 +39,8 @@ function App() {
                 <Route path='/admin/Info' component={AdminInfo}></Route>
                 <Route path='/admin/option1' component={Option1}/>
                 <Route path='/admin/banner' component={Banner}></Route>
+                <Route path='/admin/picList' component={PicList}></Route>
+                <Route path='/admin/picAdd' component={PicAdd}></Route>
               </Admin>
             )
           }}/>
