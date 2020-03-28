@@ -74,10 +74,10 @@ class PicAdd extends Component {
                   <Button>
                    <UploadOutlined /> Click to Upload
                   </Button>
-                  <input type='file' ref='files'
-                  multiple 
+                  <input type='file' ref='files'multiple 
                   onChange={this.showImg} className={Style.uploadInput}/>
                 </div>
+                {/* 缩略图 */}
                 <div>
                   {
                     showImgs.map((item,index) => {
