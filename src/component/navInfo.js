@@ -29,4 +29,22 @@ export default [
     icon:'sheet',
     path:'/admin/biaodan'
   },
+  {
+    key:'ban',
+    title:'轮播图',
+    icon:'banner',
+    path:'/admin/banner'
+  },
+  {
+    key:'picList',
+    title:'客样照',
+    icon:'banner',
+    path:'/admin/picList'
+  },
+  {
+    key:4,
+    title:'摄影师',
+    icon:'Ding',
+    path:'/admin/php'
+  }
 ]

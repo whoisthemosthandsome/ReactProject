@@ -12,6 +12,14 @@ import Echart from './pages/echart/echart'
 import How from './pages/how/how'
 //管理员成员信息
 import AdminInfo from './pages/Administror/adminInfo'
+// 轮播图
+import Banner from './pages/Banner'
+// 客样照列表
+import PicList from './pages/Pic/PicList'
+// 客样照添加
+import PicAdd from './pages/Pic/PicAdd'
+// 客样照修改
+import PicUpdate from './pages/Pic/PicUpdate'
 function App() {
   return (
     <div>
@@ -29,6 +37,10 @@ function App() {
                 <Route path='/admin/echart' component={Echart}></Route>
                 <Route path='/admin/Info' component={AdminInfo}></Route>
                 <Route path='/admin/user/how' component={How}/>
+                <Route path='/admin/banner' component={Banner}></Route>
+                <Route path='/admin/picList' component={PicList}></Route>
+                <Route path='/admin/picAdd' component={PicAdd}></Route>
+                <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
               </Admin>
             )
           }}/>

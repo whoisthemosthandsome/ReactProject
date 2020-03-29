@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { Component, Fragment} from 'react';
+import React, { Component} from 'react';
 import {Card,Table,Pagination, message } from 'antd'
 import s from './how.module.less'
 import api from '../../api/howApi'
@@ -146,11 +146,8 @@ class how extends Component {
     let {code,msg,imgs} = await api.addPic(formdata)
     if(code){ return message.error(msg)}
     imgs.map((item)=>{
-      console.log('item', item)
       imgPaths.push(item)
       this.setState({imgPaths})
-     // imgPaths=url 
-      console.log(153,imgPaths)
     })
   }
   addHow=async()=>{//添加到数据库
