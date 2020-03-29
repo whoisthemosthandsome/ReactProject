@@ -16,9 +16,9 @@ class Admin {
     let url=`/mall/admin/${_id}`;
     return axios.delete(url)
   }
-  update(_id){
-    let url='/mall/'
-  }
+  // update(_id){
+  //   let url='/mall/'
+  // }
 }
 
 export default new Admin()
