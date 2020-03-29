@@ -72,7 +72,7 @@ class PicAdd extends Component {
   getinitData = async () => {
     let _id = this.props.match.params._id // 修改客样照的id
     this.setState({_id})
-    let { code, list } = await picApi.getphpById(_id) // 获取客样照信息
+    let { code, list } = await picApi.getById(_id) // 获取客样照信息
     if (code) {return message.error('获取客样照失败, 请重试')} // 请求失败
     list = list[0] // 客样照信息对象
     let { title,desc,look,like,imgs,phpType } = list // 解构修改前数据

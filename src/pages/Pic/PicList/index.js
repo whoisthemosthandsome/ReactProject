@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import picApi from '../../../api/picApi'
 import baseUrl from '../../../ultils/baseUrl'
 import Style from './index.module.less'
-import { Card, Button, Table, message, Popconfirm, Spin, Pagination  } from 'antd'
+import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Select, Option } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 class PicList extends Component {
   state = {
@@ -10,6 +10,10 @@ class PicList extends Component {
     pageSize: 2, // 每页条数
     count: 0, // 总条数
     spinning: false, // 记载中动画显示隐藏
+    kw: '', // 关键词
+    function: '', // 分页点击执行方法
+    photers: [], // 摄影师列表
+    photer: '全部', // 选中的摄影师
     list: [], // 客样照列表
     // 客样照表头
     columns: [
@@ -74,7 +78,7 @@ class PicList extends Component {
             <Popconfirm title="确定要删除吗？"
              onCancel={()=>{message.error('取消删除')}} onConfirm={this.del.bind(null,recode._id,recode.imgs)}
             >
-              <Button danger size='small'>删除</Button>
+              <Button danger size='small' style={{marginBottom: '5px'}}>删除</Button>
             </Popconfirm>
             <Button type='primary' size='small' onClick={()=>{this.props.history.push(`/admin/picUpdate/${recode._id}`)}}>修改</Button>
           </div>
@@ -87,6 +91,37 @@ class PicList extends Component {
     let { code, msg } = await picApi.del({_id, imgs}) // 删除请求
     if(code){ return message.error(msg) } // 删除失败
     this.getListData() // 删除成功刷新页面
+  }
+  // 搜索
+  search = async () => {
+    let {kw} = this.state
+    // 关键词为空 切换到分页查询
+    if (!kw) {
+      this.setState({function: this.getListData, pageSize: 2}, ()=>{ return this.getListData() })
+    }
+    // 关键词不为空 切换关键词查询
+    this.setState({spinning: true}) // 加载中动画显示
+    this.setState({function: this.search}) // 分页点击处理方法设置为关键词查询
+    let { code, msg , list, count } = await picApi.getByKw({kw}) // 搜索请求
+    if(code){ return message.error(msg) } // 查询失败
+    this.setState({list, count, pageSize: count}) // 查询成功
+    this.setState({spinning: false}) // 加载中动画隐藏
+  }
+  // 查询指定摄影师客样照
+  getByPhoter = async () => {
+    let { photer } = this.state
+    // 选中全部摄影师 切换至分页查询
+    if (photer === '全部') {
+      return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
+    }
+    // 选中指定摄影师 切换至摄影师查询
+    this.setState({spinning: true}) // 加载中动画显示
+    this.setState({function: this.getByPhoter}) // 分页点击处理方法设置为摄影师查询
+    let { code, msg , list, count } = await picApi.getByPhpId(photer)
+    if(code){ return message.error(msg) } // 查询失败
+    if(list.length === 0){ message.warn('暂无该摄影师客样照') } // 返回列表为空
+    this.setState({list, count, pageSize: count}) // 查询成功
+    this.setState({spinning: false}) // 加载中动画隐藏
   }
   // 获取客样照列表
   getListData = async () => {
@@ -105,30 +140,59 @@ class PicList extends Component {
     this.setState({list, count}) // 查询成功
     this.setState({spinning: false}) // 加载中动画隐藏
   }
-  // 初始化客样照列表
-  componentDidMount () {
-    this.getListData()
+  // 初始化
+  componentDidMount = async () => {
+    this.getListData() // 初始化客样照列表
+    this.setState({function: this.getListData}) // 分页点击处理方法设置为分页查询
+    let { code, data } = await picApi.getphp() // 摄影师列表请求
+    if (code) {return message.error('获取摄影师列表失败, 请重试')} // 请求失败
+    data.unshift({_id: '全部', phpName: '全部'}) // 添加全部摄影师选项
+    this.setState({photers: data}) // 请求成功初始化摄影师列表
   }
   render() {
-    let { columns, list, spinning, page, pageSize, count } = this.state
+    let { columns, list, spinning, page, pageSize, count, kw, photers, photer } = this.state
     return (
       <div className={Style.box}>
         <Card title='客样照' className={Style.card}>
 
-          {/* 添加客样照 */}
-          <Button type='primary' icon={<PlusOutlined />} onClick={() => {
-            this.props.history.push('/admin/picAdd')
-          }}>添加客样照</Button>
-
+          <div className={Style.btnBox}>
+            {/* 添加客样照 */}
+            <Button type='primary' icon={<PlusOutlined />} className={Style.btn} onClick={() => {
+              this.props.history.push('/admin/picAdd')
+            }}>添加客样照</Button>
+            {/* 搜索 */}
+            <div className={Style.search}>
+              <Input placeholder='标题/描述' className={Style.searchBox} value={kw} onChange={(e)=>{
+                this.setState({kw: e.target.value})
+              }}/>
+              <Button type='primary' className={Style.btn} onClick={this.search}>搜索</Button>
+            </div>
+            {/* 查询指定摄影师客样照 */}
+            <div>
+              <span>摄影师：</span>
+              <Select style={{width:'100px'}} value= {photer} onChange={(photer)=>{
+                  this.setState({photer}, () => { this.getByPhoter() })
+                }}>
+                  {
+                    photers.map((item, index) => {
+                      return(<Select.Option value={item._id} key={index}>{item.phpName}</Select.Option>)
+                    })
+                  }
+              </Select>
+            </div>
+          </div>
+          
           {/* 客样照列表 */}
           <Spin spinning={spinning}>
           <Table columns={columns} dataSource={list} rowKey='_id' scroll={{x:900,y:300}} pagination={false}></Table>
           </Spin>
 
           {/* 分页 */}
-          <Pagination showQuickJumper defaultCurrent={page}
-            total={count} pageSize={pageSize}
-            onChange={(page) => { this.setState({page}, () => { this.getListData() }) }}
+          <Pagination showQuickJumper current={page}
+            total={count} pageSize={pageSize} style={{margin: '10px 0'}}
+            onChange={(page) => {this.setState({page},() => { 
+              this.state.function()
+            }) }}
           />
         </Card>
       </div>
