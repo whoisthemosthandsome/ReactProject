@@ -15,8 +15,22 @@ class PicList extends Component {
     columns: [
       { title: '标题', key:'title' ,dataIndex: 'title', width: 100, fixed: 'left' },
       { title: 'id', key:'_id' ,dataIndex: '_id', width: 120 },
-      { title: '描述', key:'desc' ,dataIndex: 'desc', width: 120  },
-      { title: '摄影师', key:'photer' ,dataIndex: 'photer', width: 80  },
+      { title: '摄影类型', key:'phpType' ,dataIndex: 'phpType', width: 100 },
+      { title: '描述', key:'desc' ,dataIndex: 'desc', width: 120 },
+      { title: '摄影师', key:'photer' ,dataIndex: 'photer', width: 80, render(photer){
+        let name = '摄影师跑路了'
+        if (photer.length !== 0) { name = photer[0].phpName}
+        return(<span>{name}</span>)
+      }  },
+      { title: '发布时间', key:'createTime' ,dataIndex: 'createTime', width: 100, render(createTime) {
+        // 将发布时间毫秒转为日期
+        let time = new Date(Number(createTime))
+        let year = time.getFullYear()
+        let month = time.getUTCMonth() + 1
+        let date = time.getDate()
+        let show = `${year}/${month}/${date}`
+        return(<span>{show}</span>)
+      } },
       { title: '浏览', key:'look' ,dataIndex: 'look', width: 80  },
       { title: '点赞', key:'like' ,dataIndex: 'like', width: 80  },
       { title: '图片', key:'imgs', width: 290, render: (recode) => {
@@ -62,7 +76,7 @@ class PicList extends Component {
             >
               <Button danger size='small'>删除</Button>
             </Popconfirm>
-            <Button type='primary' size='small'>修改</Button>
+            <Button type='primary' size='small' onClick={()=>{this.props.history.push(`/admin/picUpdate/${recode._id}`)}}>修改</Button>
           </div>
         )
       }}
@@ -80,6 +94,14 @@ class PicList extends Component {
     let { page, pageSize } = this.state
     let {code, msg , list, count} = await picApi.getByPage({ page, pageSize }) // 查询请求
     if(code){ return message.error(msg) } // 查询失败
+    // 当前显示页内容全部删除 重新加载页面 显示前一页
+    if (list.length === 0) { 
+      let page = this.state.page
+      if (page === 1) { this.setState({list, count});message.warn('暂无数据'); return this.setState({spinning: false}) }
+      page--
+      this.setState({page})
+      this.getListData()
+    }
     this.setState({list, count}) // 查询成功
     this.setState({spinning: false}) // 加载中动画隐藏
   }

@@ -20,6 +20,8 @@ import Banner from './pages/Banner'
 import PicList from './pages/Pic/PicList'
 // 客样照添加
 import PicAdd from './pages/Pic/PicAdd'
+// 客样照修改
+import PicUpdate from './pages/Pic/PicUpdate'
 function App() {
   return (
     <div>
@@ -41,6 +43,7 @@ function App() {
                 <Route path='/admin/banner' component={Banner}></Route>
                 <Route path='/admin/picList' component={PicList}></Route>
                 <Route path='/admin/picAdd' component={PicAdd}></Route>
+                <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
               </Admin>
             )
           }}/>
