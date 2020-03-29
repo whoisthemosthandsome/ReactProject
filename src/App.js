@@ -1,11 +1,6 @@
 import React from 'react';
 
 import './reset.css'
-<<<<<<< HEAD
-// import './App.css';
-=======
-
->>>>>>> 09bc43dc307c29b9eda666a45cb428be71136585
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
 //后台系统主页
 import Admin from './pages/Admin/admin'
