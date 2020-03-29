@@ -3,7 +3,7 @@ import React, { Component} from 'react';
 import {Card,Table,Pagination, message } from 'antd'
 import s from './how.module.less'
 import api from '../../api/howApi'
-import baseURL from '../../ultils/baseURL'
+import baseUrl from '../../ultils/baseUrl'
 //------------------------------------------组件正文-------------------------------------------
 class how extends Component {
   //-----------------------------------state值----------------------------------------
@@ -62,7 +62,7 @@ class how extends Component {
               {
                  record.map((item,index)=>{
                   return(
-                    <img className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='100' height='100' alt='not found' src={baseURL+item}></img>
+                    <img className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='100' height='100' alt='not found' src={baseUrl+item}></img>
                   )
                 })
               }
@@ -96,7 +96,7 @@ class how extends Component {
       //         {//用户端显示缩略图
       //           this.state.imgPaths.map((item)=>{
       //           return(
-      //             <img width='50' height='50' alt='' src={baseURL+item}/>
+      //             <img width='50' height='50' alt='' src={baseUrl+item}/>
       //           )
       //          })
       //         }
@@ -132,7 +132,7 @@ class how extends Component {
   }
   //上传图片到public在页面显示------------------------ ！仅为用户页面做测试用，本组件用不到此功能！----------------------------
   addPic=async()=>{
-    let { imgPaths,url }=this.state
+    let { imgPaths}=this.state
     // 获得用户选择的图片信息
     let files = document.getElementById('file').files
     // let {size,type} = file 

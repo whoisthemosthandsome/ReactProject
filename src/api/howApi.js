@@ -1,5 +1,5 @@
 import axios from '../ultils/index.js'
-import baseURL from '../ultils/baseURL'
+import baseURL from '../ultils/baseUrl'
 class Admin {
   userList(){
     let url=baseURL+'/how/all'
