@@ -29,4 +29,10 @@ export default [
     icon:'sheet',
     path:'/admin/biaodan'
   },
+  {
+    key:4,
+    title:'摄影师',
+    icon:'Ding',
+    path:'/admin/php'
+  }
 ]
