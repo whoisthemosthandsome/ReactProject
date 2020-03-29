@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 // import s from './customNav.module.less' 
 import { Menu } from 'antd';
 import {withRouter} from 'react-router-dom'
-import { HomeOutlined,AppstoreOutlined, MailOutlined, SettingOutlined, MacCommandOutlined} from '@ant-design/icons';
+import { HomeOutlined,AppstoreOutlined, MailOutlined, SettingOutlined, MacCommandOutlined,DingdingOutlined} from '@ant-design/icons';
 import navInfo from '../navInfo' //引入导航栏列表信息
 const { SubMenu } = Menu;
 class customNav extends Component {
@@ -20,6 +20,8 @@ class customNav extends Component {
         return <MailOutlined/>
       case 'banner':
         return <MacCommandOutlined />
+      case 'Ding':
+        return <DingdingOutlined />
       default:
       return <SettingOutlined/>
     }

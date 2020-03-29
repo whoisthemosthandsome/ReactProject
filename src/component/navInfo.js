@@ -41,4 +41,10 @@ export default [
     icon:'banner',
     path:'/admin/picList'
   },
+  {
+    key:4,
+    title:'摄影师',
+    icon:'Ding',
+    path:'/admin/php'
+  }
 ]

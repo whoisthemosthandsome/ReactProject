@@ -1,7 +1,13 @@
 import React from 'react';
 
 import './reset.css'
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 
+>>>>>>> 263c81afa73c79cb07470e20de09f726a0127564
+=======
+>>>>>>> maxingyu
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
 //后台系统主页
 import Admin from './pages/Admin/admin'
