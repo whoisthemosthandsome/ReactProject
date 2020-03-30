@@ -17,16 +17,16 @@ class PicList extends Component {
     list: [], // 客样照列表
     // 客样照表头
     columns: [
-      { title: '标题', key:'title' ,dataIndex: 'title', width: 100, fixed: 'left' },
-      { title: 'id', key:'_id' ,dataIndex: '_id', width: 120 },
-      { title: '摄影类型', key:'phpType' ,dataIndex: 'phpType', width: 100 },
-      { title: '描述', key:'desc' ,dataIndex: 'desc', width: 120 },
-      { title: '摄影师', key:'photer' ,dataIndex: 'photer', width: 80, render(photer){
+      { title: '标题', key:'title' ,dataIndex: 'title', width: 100, fixed: 'left', align: 'center' },
+      { title: 'id', key:'_id' ,dataIndex: '_id', width: 120, align: 'center' },
+      { title: '摄影类型', key:'phpType' ,dataIndex: 'phpType', width: 100, align: 'center' },
+      { title: '描述', key:'desc' ,dataIndex: 'desc', width: 120, align: 'center' },
+      { title: '摄影师', key:'photer' ,dataIndex: 'photer', width: 80, align: 'center', render(photer){
         let name = '摄影师跑路了'
         if (photer.length !== 0) { name = photer[0].phpName}
         return(<span>{name}</span>)
       }  },
-      { title: '发布时间', key:'createTime' ,dataIndex: 'createTime', width: 100, render(createTime) {
+      { title: '发布时间', key:'createTime' ,dataIndex: 'createTime', width: 100, align: 'center', render(createTime) {
         // 将发布时间毫秒转为日期
         let time = new Date(Number(createTime))
         let year = time.getFullYear()
@@ -35,11 +35,14 @@ class PicList extends Component {
         let show = `${year}/${month}/${date}`
         return(<span>{show}</span>)
       } },
-      { title: '浏览', key:'look' ,dataIndex: 'look', width: 80  },
-      { title: '点赞', key:'like' ,dataIndex: 'like', width: 80  },
-      { title: '图片', key:'imgs', width: 290, render: (recode) => {
+      { title: '浏览', key:'look' ,dataIndex: 'look', width: 80, align: 'center' },
+      { title: '点赞', key:'like' ,dataIndex: 'like', width: 80, align: 'center' },
+      { title: '图片总数', key:'count' ,dataIndex: 'imgs', width: 100, align: 'center', render(imgs){
+        return(<span>{imgs.length}</span>)
+      } },
+      { title: '图片路径', key:'imgs', width: 320, align: 'center', render: (recode) => {
         return(
-          <div style={{maxHeight:'180px', overflow: 'auto'}}>
+          <div style={{maxHeight:'160px', overflow: 'auto'}}>
             {
               recode.imgs.map((item,index) => {
                 let name = 'selUrl' + recode._id // this.state中该条客样照选中的url的变量名
@@ -63,7 +66,7 @@ class PicList extends Component {
           </div>
         )
       } },
-      { title: '缩略图', key: 'img', width: 130, render: (recode) => {
+      { title: '缩略图', key: 'img', width: 130, align: 'center', render: (recode) => {
         let name = 'selUrl' + recode._id // this.state中该条客样照选中的url的变量名
         let url = this.state[name] // 该条客样照选中的url
         return (
@@ -72,7 +75,7 @@ class PicList extends Component {
         } alt='' style={{width:'120px', maxHeight:'80px'}}/>
         )
       } },
-      { title: '操作', key:'action',width: 120, fixed: 'right', render: (recode) => {
+      { title: '操作', key:'action',width: 120, fixed: 'right', align: 'center', render: (recode) => {
         return(
           <div>
             <Popconfirm title="确定要删除吗？"
@@ -157,40 +160,46 @@ class PicList extends Component {
         <Card title='客样照' className={Style.card}>
 
           <div className={Style.btnBox}>
-            {/* 添加客样照 */}
-            <Button type='primary' icon={<PlusOutlined />} className={Style.btn} onClick={() => {
-              this.props.history.push('/admin/picAdd')
-            }}>添加客样照</Button>
-            {/* 搜索 */}
-            <div className={Style.search}>
-              <Input placeholder='标题/描述' className={Style.searchBox} value={kw} onChange={(e)=>{
-                this.setState({kw: e.target.value})
-              }}/>
-              <Button type='primary' className={Style.btn} onClick={this.search}>搜索</Button>
+            <div className={Style.left}>
+              {/* 添加客样照 */}
+              <Button type='primary' icon={<PlusOutlined />} className={Style.btn} onClick={() => {
+                this.props.history.push('/admin/picAdd')
+              }}>添加客样照</Button>
+              {/* 搜索 */}
+              <div className={Style.search}>
+                <Input placeholder='标题/描述' className={Style.searchBox} value={kw} onChange={(e)=>{
+                  this.setState({kw: e.target.value})
+                }}/>
+                <Button type='primary' className={Style.btn} onClick={this.search}>搜索</Button>
+              </div>
+              {/* 查询指定摄影师客样照 */}
+              <div className={Style.btn}>
+                <span>摄影师：</span>
+                <Select style={{width:'100px'}} value= {photer} onChange={(photer)=>{
+                    this.setState({photer}, () => { this.getByPhoter() })
+                  }}>
+                    {
+                      photers.map((item, index) => {
+                        return(<Select.Option value={item._id} key={index}>{item.phpName}</Select.Option>)
+                      })
+                    }
+                </Select>
+              </div>
             </div>
-            {/* 查询指定摄影师客样照 */}
-            <div>
-              <span>摄影师：</span>
-              <Select style={{width:'100px'}} value= {photer} onChange={(photer)=>{
-                  this.setState({photer}, () => { this.getByPhoter() })
-                }}>
-                  {
-                    photers.map((item, index) => {
-                      return(<Select.Option value={item._id} key={index}>{item.phpName}</Select.Option>)
-                    })
-                  }
-              </Select>
+            <div className={Style.right}>
+              <Button type='primary' className={Style.btn}>导出EXCEL</Button>
+              <div className={Style.count}><span>{`共${count}条`}</span></div>
             </div>
           </div>
           
           {/* 客样照列表 */}
           <Spin spinning={spinning}>
-          <Table columns={columns} dataSource={list} rowKey='_id' scroll={{x:900,y:300}} pagination={false}></Table>
+          <Table columns={columns} dataSource={list} rowKey='_id' scroll={{x:900,y:280}} pagination={false}></Table>
           </Spin>
 
           {/* 分页 */}
           <Pagination showQuickJumper current={page}
-            total={count} pageSize={pageSize} style={{margin: '10px 0'}}
+            total={count} pageSize={pageSize} style={{marginTop: '10px', textAlign: 'center'}}
             onChange={(page) => {this.setState({page},() => { 
               this.state.function()
             }) }}
