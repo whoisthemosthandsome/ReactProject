@@ -48,6 +48,12 @@ export default [
     path:'/admin/php'
   },
   {
+    key:5,
+    title:'摄影师详情',
+    icon:'Ding',
+    path:'/admin/phpdetails'
+  },
+  {
     key:'user/',
     title:'用户',
     icon:'user',

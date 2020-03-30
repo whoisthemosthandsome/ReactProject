@@ -1,5 +1,6 @@
 import React from 'react';
-import './reset.css';
+import './reset.css'
+
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
 //后台系统主页
 import Admin from './pages/Admin/admin'
