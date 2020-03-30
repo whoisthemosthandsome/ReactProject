@@ -17,7 +17,7 @@ class Admin {
   }
   addHow(param){//添加到数据库接口
     let url =baseURL+'/how/add'
-    console.log('后端20行param', param)
+   // console.log('后端20行param', param)
     return axios.post(url,param)
   }
 }
