@@ -21,7 +21,7 @@ export default class Admin extends Component {
     return(
     <Layout className={s.outer}>
     <Sider  style={{background:'yellow'}}>
-      <div style={{height:64,width:200,background:'blue'}} className="logo" >放logo </div>
+      <div style={{height:64,width:200,background:'pink',textAlign:'center'}} className="logo" >logo </div>
        <Nav></Nav>
     </Sider>
     

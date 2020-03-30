@@ -18,6 +18,7 @@ import Banner from './pages/Banner'
 import PicList from './pages/Pic/PicList'
 // 客样照添加
 import PicAdd from './pages/Pic/PicAdd'
+import User from './pages/User/user'
 // 客样照修改
 import PicUpdate from './pages/Pic/PicUpdate'
 function App() {
@@ -25,6 +26,9 @@ function App() {
     <div>
       <HashRouter>
         {/* <NavLink to='/login'>dnlgu</NavLink> */}
+        
+        {/* <Switch> */}
+          {/* <Redirect exact from='/' to='/login' ></Redirect>   */}
         <Switch>
           <Redirect exact from='/' to='/login' ></Redirect>  
           <Route path='/login' component={Login}/>
@@ -35,7 +39,7 @@ function App() {
             return(
               <Admin>
                 <Route path='/admin/echart' component={Echart}></Route>
-                <Route path='/admin/Info' component={AdminInfo}></Route>
+                <Route path='/admin/admin' component={AdminInfo}></Route>
                 <Route path='/admin/user/how' component={How}/>
                 <Route path='/admin/banner' component={Banner}></Route>
                 <Route path='/admin/picList' component={PicList}></Route>
