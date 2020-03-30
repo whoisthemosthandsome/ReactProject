@@ -22,23 +22,6 @@ export default [
     title:'客样照',
     icon:'banner',
     path:'/admin/picList'
-  },{
-    key:'user',
-    title:'用户信息',
-    icon:'Dashboard',
-    path:'/admin/user',
-    children:[
-      {
-      key:'user-1',
-      title:'查看用户',
-      path:'/admin/user/info'
-      },
-      {
-        key:'user-2',
-        title:"注销用户",
-        path:'/admin/user/del',
-      }
-    ]
   },
   {
     key:4,
@@ -47,11 +30,16 @@ export default [
     path:'/admin/php'
   },
   {
-    key:'user',
+    key:'user-',
     title:'用户',
     icon:'user',
     path:"/admin/user",
     children:[
+      {
+        key:'user-info',
+        title:"用户信息",
+        path:'/admin/user/info',
+      },
       {
       key:'user-how',
       title:'用户评价',
@@ -61,7 +49,12 @@ export default [
         key:'user-book',
         title:"用户预约页",
         path:'/admin/user/book',
-      }
+      },
+      {
+        key:'user-order',
+        title:"用户订单页",
+        path:'/admin/user/order',
+      },
     ]
   }
 ]

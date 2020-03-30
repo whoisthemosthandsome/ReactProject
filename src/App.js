@@ -11,22 +11,23 @@ import Update from './pages/update/update.js'
 import Echart from './pages/echart/echart'
 import How from './pages/how/how'
 //管理员成员信息
-import AdminInfo from './pages/Administror/adminInfo'
+import AdminInfo from './pages/Administror/admin'
 // 轮播图
 import Banner from './pages/Banner'
 // 客样照列表
 import PicList from './pages/Pic/PicList'
 // 客样照添加
 import PicAdd from './pages/Pic/PicAdd'
-import User from './pages/User/user'
 // 客样照修改
 import PicUpdate from './pages/Pic/PicUpdate'
+import UserInfo from './pages/userInfo'
+import Book from './pages/book'
+import Order from './pages/order'
+
 function App() {
   return (
     <div>
       <HashRouter>
-        {/* <NavLink to='/login'>dnlgu</NavLink> */}
-        
         {/* <Switch> */}
           {/* <Redirect exact from='/' to='/login' ></Redirect>   */}
         <Switch>
@@ -44,6 +45,9 @@ function App() {
                 <Route path='/admin/banner' component={Banner}></Route>
                 <Route path='/admin/picList' component={PicList}></Route>
                 <Route path='/admin/picAdd' component={PicAdd}></Route>
+                <Route path='/admin/user/book' component={Book}></Route>
+                <Route path='/admin/user/info' component={UserInfo}></Route>
+                <Route path='/admin/user/order' component={Order}></Route>
                 <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
               </Admin>
             )

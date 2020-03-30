@@ -2,23 +2,19 @@ import axios from '../ultils/index.js'
 import baseUrl from '../ultils/baseUrl'
 class api {
     add(obj){
-        let url = baseUrl +'/user/add'
+        let url = baseUrl +'/book/add'
         return axios.post(url,obj)
     }
     get(){
-        let url = baseUrl + '/user/get'
+        let url = baseUrl + '/book/get'
         return axios.post(url)
     }
     del(_id){
-        let url = baseUrl + '/user/del'
+        let url = baseUrl + '/book/del'
         return axios.post(url,{_id})
     }
-    update(obj){
-        let url = baseUrl +'/user/updata'
-        return axios.post(url,obj)
-    }
     getone(_id){
-        let url = baseUrl +'/user/getone'
+        let url = baseUrl +'/book/getone'
         return axios.post(url,_id)
     }
 }
