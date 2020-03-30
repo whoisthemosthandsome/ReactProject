@@ -149,14 +149,8 @@ class PicList extends Component {
   export = async () => {
     let { code, list } = await picApi.get()
     if (code) { return message.error('导出失败') }
-    console.log(list)
     // 表头
     let thead = [ '序号', '摄影师', '图片路径','id','标题','描述','浏览','点赞','发布时间','摄影类型','图片总数' ]
-    // for (const key in list[0]) {
-    //   if (key !== '__v') {
-    //     thead.push(key)
-    //   }
-    // }
     // 内容
     let table = list.map((item, index) => {
       let arr = [ index+1 ]
@@ -174,7 +168,7 @@ class PicList extends Component {
         }
         if (key === 'imgs') {
           value = ''
-          item[key].map(((url)=>{
+          item[key].forEach(((url)=>{
             value = value + url + '|'
           }))
         }
@@ -184,7 +178,6 @@ class PicList extends Component {
       return arr
     })
     table.unshift(thead)
-    console.log(table)
     // 导出
     let ws = XLSX.utils.aoa_to_sheet(table) // 数组转为标签页
     let wb = XLSX.utils.book_new() // 创建工作薄
@@ -205,7 +198,6 @@ class PicList extends Component {
     return (
       <div className={Style.box}>
         <Card title='客样照' className={Style.card}>
-
           <div className={Style.btnBox}>
             <div className={Style.left}>
               {/* 添加客样照 */}
