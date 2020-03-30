@@ -20,7 +20,7 @@ export default [
   {
     key:'picList',
     title:'客样照',
-    icon:'banner',
+    icon:'pic',
     path:'/admin/picList'
   },
   // {

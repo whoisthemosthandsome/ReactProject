@@ -3,6 +3,7 @@ import picApi from '@api/picApi'
 import Style from './index.module.less'
 import { Card, Button, Form, Input, Select, message } from 'antd'
 import { UploadOutlined  } from '@ant-design/icons'
+import { formatCountdown } from 'antd/lib/statistic/utils'
 const layout = {
   labelCol: {
     span: 4,
@@ -20,6 +21,8 @@ class PicAdd extends Component {
     phpType: '请选择', // 摄影类型value
     defaultValue: '请选择', // 摄影师默认选中项
     phpTypes: [], // 摄影类型列表
+    timer: '', // 返回首页计时器
+    continueBtn: false, // 继续添加按钮显示隐藏
   }
   // 上传客样照文本
   onFinish = async (value) =>{
@@ -29,10 +32,15 @@ class PicAdd extends Component {
     await this.upload() // 上传图片
     value.imgs = this.state.fileList // 写入图片路径
     value.phpType = this.state.phpType // 写入摄影类型
-    let { code, msg } = await picApi.add(value) // 上传请求
-    if(code){ return message.error(msg) } // 上传失败
-    message.success(msg) // 上传成功
-    this.setState({disabled: false}) // 解除提交禁用
+    let { code } = await picApi.add(value) // 上传请求
+    if(code){ return message.error('添加失败') } // 上传失败
+    message.success('添加成功 3s后返回') // 上传成功
+    this.setState({continueBtn: true}) // 继续继续按钮显示
+    // 跳转页面
+    let timer = setTimeout(()=>{
+      this.props.history.push('/admin/picList')
+    }, 3000)
+    this.setState({timer})
   }
   // 上传图片
   upload = async () => {
@@ -68,13 +76,14 @@ class PicAdd extends Component {
     let phpTypes = data.phpTitle.split('/')
     this.setState({phpTypes, phpType: '请选择'})
   }
+  // 获取摄影师列表
   componentDidMount = async () => {
     let { code, data } = await picApi.getphp() // 摄影师列表请求
     if (code) {return message.error('获取摄影师列表失败, 请重试')} // 请求失败
     this.setState({photers: data}) // 请求成功初始化摄影师列表
   }
   render() {
-    let { showImgs, photers, defaultValue, phpTypes, phpType } = this.state
+    let { showImgs, photers, defaultValue, phpTypes, phpType, timer, continueBtn } = this.state
     return (
       <div>
         <Card title='客样照添加'>
@@ -138,9 +147,15 @@ class PicAdd extends Component {
             </Form.Item>
   
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+              <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>提交</Button>
+              <Button type="primary" onClick={() => { this.props.history.push('/admin/picList') }}>返回</Button>
+              {continueBtn && 
+              <Button type="primary" style={{marginLeft: '20px'}} onClick={() => {
+                clearTimeout(timer)
+                this.setState({timer: null, continueBtn: false})
+                this.setState({disabled: false}) // 解除提交禁用
+              }}>继续添加</Button>
+             }
             </Form.Item>
           </Form>
         </Card>

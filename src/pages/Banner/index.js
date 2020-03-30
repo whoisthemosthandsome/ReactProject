@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import baseUrl from '@ultils/baseUrl'
 import bannerApi from '@api/bannerApi'
 import { Card, Table, Button, Modal, message, Popconfirm, Spin } from 'antd'
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 class Banner extends Component {
   state = {
     visible: false, // 添加模态框显示隐藏
@@ -20,7 +20,7 @@ class Banner extends Component {
           <Popconfirm title="确认要删除吗？" onCancel={()=>{message.error('取消删除')}} onConfirm={
             this.bannerDel.bind(null,recode._id, recode.url)
           }>
-            <Button danger size='small'>删除</Button>
+            <Button danger size='small' icon={<DeleteOutlined />}>删除</Button>
           </Popconfirm>
         )
       }}
@@ -66,7 +66,7 @@ class Banner extends Component {
     return (
       <div>
         <Card title='轮播图'>
-          <Button type='primary' icon={<PlusOutlined />} onClick={() => {
+          <Button type='primary' icon={<PlusOutlined />} style={{marginBottom: '10px'}} onClick={() => {
             this.setState({visible: true})
           }}>添加</Button>
           <Spin spinning={spinning}>

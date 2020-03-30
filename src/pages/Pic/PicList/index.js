@@ -4,7 +4,7 @@ import baseUrl from '@ultils/baseUrl'
 import Style from './index.module.less'
 import XLSX from 'xlsx'
 import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Select } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, SearchOutlined, ExportOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 class PicList extends Component {
   state = {
     page: 1, // 当前显示页
@@ -82,9 +82,9 @@ class PicList extends Component {
             <Popconfirm title="确定要删除吗？"
              onCancel={()=>{message.error('取消删除')}} onConfirm={this.del.bind(null,recode._id,recode.imgs)}
             >
-              <Button danger size='small' style={{marginBottom: '5px'}}>删除</Button>
+              <Button danger size='small' icon={<DeleteOutlined />} style={{marginBottom: '5px'}}>删除</Button>
             </Popconfirm>
-            <Button type='primary' size='small' onClick={()=>{this.props.history.push(`/admin/picUpdate/${recode._id}`)}}>修改</Button>
+            <Button type='default' icon={<EditOutlined />} size='small' onClick={()=>{this.props.history.push(`/admin/picUpdate/${recode._id}`)}}>修改</Button>
           </div>
         )
       }}
@@ -94,6 +94,7 @@ class PicList extends Component {
   del = async (_id, imgs) => {
     let { code, msg } = await picApi.del({_id, imgs}) // 删除请求
     if(code){ return message.error(msg) } // 删除失败
+    message.success(msg)
     this.getListData() // 删除成功刷新页面
   }
   // 搜索
@@ -109,6 +110,7 @@ class PicList extends Component {
     this.setState({function: this.search}) // 分页点击处理方法设置为关键词查询
     let { code, msg , list, count } = await picApi.getByKw({kw}) // 搜索请求
     if(code){ return message.error(msg) } // 查询失败
+    if (list.length === 0) {  message.warn('请输入其他关键词')} // 查询结果为空
     this.setState({list, count, pageSize: count}) // 查询成功
     this.setState({spinning: false}) // 加载中动画隐藏
   }
@@ -183,6 +185,7 @@ class PicList extends Component {
     let wb = XLSX.utils.book_new() // 创建工作薄
     XLSX.utils.book_append_sheet(wb, ws) // 标签页写入工作薄
     XLSX.writeFile(wb, '客样照.xlsx') // 工作薄导出为excel文件
+    message.success('导出成功')
   }
   // 初始化
   componentDidMount = async () => {
@@ -209,7 +212,7 @@ class PicList extends Component {
                 <Input placeholder='标题/描述' className={Style.searchBox} value={kw} onChange={(e)=>{
                   this.setState({kw: e.target.value})
                 }}/>
-                <Button type='primary' className={Style.btn} onClick={this.search}>搜索</Button>
+                <Button type='primary' icon={<SearchOutlined />} className={Style.btn} onClick={this.search}>搜索</Button>
               </div>
               {/* 查询指定摄影师客样照 */}
               <div className={Style.btn}>
@@ -226,7 +229,7 @@ class PicList extends Component {
               </div>
             </div>
             <div className={Style.right}>
-              <Button type='primary' className={Style.btn} onClick={this.export}>导出EXCEL</Button>
+              <Button type='primary' icon={<ExportOutlined />} className={Style.btn} onClick={this.export}>导出EXCEL</Button>
               <div className={Style.count}><span>{`共${count}条`}</span></div>
             </div>
           </div>

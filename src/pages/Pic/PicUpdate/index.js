@@ -28,6 +28,8 @@ class PicAdd extends Component {
     phpType: '', // 摄影类型
     imgsBeforeUpdate: [], // 修改前图片路径
     imgsChange: false, // 图片是否修改
+    timer: '', // 返回首页计时器
+    continueBtn: false, // 继续修改按钮显示隐藏
   }
   // 上传客样照文本
   onFinish = async () =>{
@@ -35,11 +37,16 @@ class PicAdd extends Component {
     if (files.length !== 0) { await this.upload(); this.setState({imgsChange: true}) } // 上传图片
     let { _id, title, desc, imgs, look, like, photer, phpType, imgsChange, imgsBeforeUpdate } = this.state
     // 修改请求
-    let { code, msg } = await picApi.update({ _id, title, desc, imgs, look, like, photer, phpType, imgsChange, imgsBeforeUpdate })
-    if(code){ return message.error(msg) } // 修改失败
+    let { code } = await picApi.update({ _id, title, desc, imgs, look, like, photer, phpType, imgsChange, imgsBeforeUpdate })
+    if(code){ return message.error('修改失败') } // 修改失败
     // 修改成功 更新页面
-    message.success(msg)
-    this.getinitData()
+    message.success('修改成功 3s后返回首页')
+    this.setState({continueBtn: true}) // 继续修改按钮显示
+    // 跳转页面
+    let timer = setTimeout(()=>{
+      this.props.history.push('/admin/picList')
+    }, 3000)
+    this.setState({timer})
   }
   // 上传图片
   upload = async () => {
@@ -93,7 +100,7 @@ class PicAdd extends Component {
     this.getinitData()
   }
   render() {
-    let { showImgs, photers, photer, title, desc, look, like, phpType } = this.state
+    let { showImgs, photers, photer, title, desc, look, like, phpType, timer, continueBtn } = this.state
     return (
       <div>
         <Card title='客样照修改'>
@@ -161,9 +168,15 @@ class PicAdd extends Component {
             </Form.Item>
   
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+              <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>提交</Button>
+              <Button type="primary" onClick={() => { this.props.history.push('/admin/picList') }}>返回</Button>
+              {continueBtn && 
+              <Button type="primary" style={{marginLeft: '20px'}} onClick={() => {
+                clearTimeout(timer)
+                this.setState({timer: null, continueBtn: false})
+                this.getinitData() // 更新修改后页面
+              }}>继续修改</Button>
+             }
             </Form.Item>
           </Form>
         </Card>
