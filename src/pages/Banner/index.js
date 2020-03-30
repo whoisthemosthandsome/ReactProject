@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import baseUrl from '../../ultils/baseUrl'
-import bannerApi from '../../api/bannerApi'
+import baseUrl from '@ultils/baseUrl'
+import bannerApi from '@api/bannerApi'
 import { Card, Table, Button, Modal, message, Popconfirm, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons';
 class Banner extends Component {

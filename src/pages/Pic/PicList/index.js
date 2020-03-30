@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import picApi from '../../../api/picApi'
-import baseUrl from '../../../ultils/baseUrl'
+import picApi from '@api/picApi'
+import baseUrl from '@ultils/baseUrl'
 import Style from './index.module.less'
 import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Select, Option } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -95,9 +95,10 @@ class PicList extends Component {
   // 搜索
   search = async () => {
     let {kw} = this.state
+    this.setState({photer: '全部'})
     // 关键词为空 切换到分页查询
     if (!kw) {
-      this.setState({function: this.getListData, pageSize: 2}, ()=>{ return this.getListData() })
+      return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
     }
     // 关键词不为空 切换关键词查询
     this.setState({spinning: true}) // 加载中动画显示

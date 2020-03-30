@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import picApi from '../../../api/picApi'
+import picApi from '@api/picApi'
 import Style from './index.module.less'
-import baseUrl from '../../../ultils/baseUrl'
+import baseUrl from '@ultils/baseUrl'
 import { Card, Button, Form, Input, Select, message } from 'antd'
 import { UploadOutlined  } from '@ant-design/icons'
 const layout = {
@@ -76,7 +76,11 @@ class PicAdd extends Component {
     if (code) {return message.error('获取客样照失败, 请重试')} // 请求失败
     list = list[0] // 客样照信息对象
     let { title,desc,look,like,imgs,phpType } = list // 解构修改前数据
-    let photer = list.photer[0]._id // 摄影师id
+    // 摄影师id
+    let photer = '摄影师跑路了' // 摄影师集合中该摄影师已删除
+    if (list.photer.length !== 0) { // 摄影师集合中该摄影师存在
+      photer = list.photer[0]._id
+    }
     // 设置修改前数据
     this.setState({ title,desc,look,like,photer,phpType,imgs,imgsBeforeUpdate:imgs, showImgs: imgs })
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import picApi from '../../../api/picApi'
+import picApi from '@api/picApi'
 import Style from './index.module.less'
 import { Card, Button, Form, Input, Select, message } from 'antd'
 import { UploadOutlined  } from '@ant-design/icons'
