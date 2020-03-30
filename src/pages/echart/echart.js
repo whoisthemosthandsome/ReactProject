@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Card} from 'antd'
 import ReactEcharts from 'echarts-for-react';
-//import api from '../../api/phpApi'
+//import api from '../../api/'
 class Echarts extends Component {
     state={
         option:{
