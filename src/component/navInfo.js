@@ -22,24 +22,25 @@ export default [
     title:'客样照',
     icon:'banner',
     path:'/admin/picList'
-  },{
-    key:'user',
-    title:'用户信息',
-    icon:'Dashboard',
-    path:'/admin/user',
-    children:[
-      {
-      key:'user-1',
-      title:'查看用户',
-      path:'/admin/user/info'
-      },
-      {
-        key:'user-2',
-        title:"注销用户",
-        path:'/admin/user/del',
-      }
-    ]
   },
+  // {
+  //   key:'user',
+  //   title:'用户信息',
+  //   icon:'Dashboard',
+  //   path:'/admin/user',
+  //   children:[
+  //     {
+  //     key:'user-1',
+  //     title:'查看用户',
+  //     path:'/admin/user/info'
+  //     },
+  //     {
+  //       key:'user-2',
+  //       title:"注销用户",
+  //       path:'/admin/user/del',
+  //     }
+  //   ]
+  // },
   {
     key:4,
     title:'摄影师',
