@@ -27,7 +27,7 @@ export default [
     key:3,
     title:'表单页',
     icon:'sheet',
-    path:'/admin/biaodan'
+    path:'/admin/echart'
   },
   {
     key:'ban',
@@ -46,5 +46,23 @@ export default [
     title:'摄影师',
     icon:'Ding',
     path:'/admin/php'
+  },
+  {
+    key:'user',
+    title:'用户',
+    icon:'user',
+    path:"/admin/user",
+    children:[
+      {
+      key:'user-how',
+      title:'用户评价',
+      path:'/admin/user/how'
+      },
+      {
+        key:'user-book',
+        title:"用户预约页",
+        path:'/admin/user/book',
+      }
+    ]
   }
 ]
