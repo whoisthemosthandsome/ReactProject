@@ -9,7 +9,29 @@ export default [
     key:2,
     title:'管理页管理',
     icon:'Dashboard',
+<<<<<<< HEAD
     path:'/admin/admin',
+=======
+    path:'/admin/administrator',
+    children:[
+      {
+      key:2-1,
+      title:'成员信息页',
+      path:'/admin/info'
+      },
+      {
+        key:2-2,
+        title:"修改页",
+        path:'/admin/change',
+      }
+    ]
+  },
+  {
+    key:3,
+    title:'表单页',
+    icon:'sheet',
+    path:'/admin/echart'
+>>>>>>> a0a2a97728761274a4413141ebcccbd12a5bbf64
   },
   {
     key:'ban',
@@ -40,4 +62,28 @@ export default [
       }
     ]
   },
+  {
+    key:4,
+    title:'摄影师',
+    icon:'Ding',
+    path:'/admin/php'
+  },
+  {
+    key:'user',
+    title:'用户',
+    icon:'user',
+    path:"/admin/user",
+    children:[
+      {
+      key:'user-how',
+      title:'用户评价',
+      path:'/admin/user/how'
+      },
+      {
+        key:'user-book',
+        title:"用户预约页",
+        path:'/admin/user/book',
+      }
+    ]
+  }
 ]
