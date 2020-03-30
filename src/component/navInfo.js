@@ -23,6 +23,24 @@ export default [
     icon:'banner',
     path:'/admin/picList'
   },
+  // {
+  //   key:'user',
+  //   title:'用户信息',
+  //   icon:'Dashboard',
+  //   path:'/admin/user',
+  //   children:[
+  //     {
+  //     key:'user-1',
+  //     title:'查看用户',
+  //     path:'/admin/user/info'
+  //     },
+  //     {
+  //       key:'user-2',
+  //       title:"注销用户",
+  //       path:'/admin/user/del',
+  //     }
+  //   ]
+  // },
   {
     key:4,
     title:'摄影师',
@@ -30,7 +48,13 @@ export default [
     path:'/admin/php'
   },
   {
-    key:'user-',
+    key:5,
+    title:'摄影师详情',
+    icon:'Ding',
+    path:'/admin/phpdetails'
+  },
+  {
+    key:'user/',
     title:'用户',
     icon:'user',
     path:"/admin/user",

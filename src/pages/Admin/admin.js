@@ -15,6 +15,8 @@ import s from './admin.module.less'
 import Nav from '../../component/customNav/customNav'
 import {HashRouter,Route} from 'react-router-dom'
 import PhpUpdate from '../PhpUpdate';
+import PhpDetails from '../PhpDetails';
+import PhpDetailsUpdate from '../PhpDetailsUpdate';
 const { Header, Content, Footer,Sider } = Layout;
 export default class Admin extends Component {
   render() {
@@ -32,6 +34,8 @@ export default class Admin extends Component {
         <HashRouter>
           <Route path='/admin/php' component={Php}></Route>
           <Route path='/admin/phpupdate/:id' component={PhpUpdate}></Route>
+          <Route path='/admin/phpdetails' component={PhpDetails}></Route>
+          <Route path='/admin/phpdetailsupdate/:id' component={PhpDetailsUpdate}></Route>
         </HashRouter>
          {this.props.children}
         </div>

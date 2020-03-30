@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Card} from 'antd'
 import ReactEcharts from 'echarts-for-react';
-
+//import api from '../../api/'
 class Echarts extends Component {
     state={
         option:{
@@ -20,6 +20,7 @@ class Echarts extends Component {
         }
     }
   componentDidMount(){
+
       setTimeout(()=>{
         // 引用类型修改原数据 对比不引起dom的更新改变
         let {option} = JSON.parse(JSON.stringify(this.state))

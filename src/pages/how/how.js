@@ -44,7 +44,7 @@ class how extends Component {
       },
       {
         title: '评分',
-        dataIndex: 'staffName',
+        dataIndex: 'star',
         key: 'star',
         width:100,
       },
@@ -131,7 +131,7 @@ class how extends Component {
         content:'红红火火恍恍惚惚哈哈哈呱呱呱呱呱呱呱呱呱哈哈哈哈哈红红火火恍恍惚惚',
         _id:'something',
         url:'lujing',
-        createTime:'2020-3-9'
+        createTime:'2020-3-9',
       }
     ],
     allPage:1,//总页数
@@ -204,13 +204,12 @@ class how extends Component {
       let {page,pageSize}  = this.state
       api.Bypage({page,pageSize})
       .then((data)=>{
+        console.log(data)
         this.setState({list:data.list,
           allPage:data.allCount,
           page,pageSize})
       })
    }
-
-  
   //---------------------------------根据数据渲染页面------------------------------------
   render() {
     let {list,allPage,pageSize,page,columns} = this.state
