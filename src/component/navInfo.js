@@ -46,5 +46,11 @@ export default [
     title:'摄影师',
     icon:'Ding',
     path:'/admin/php'
+  },
+  {
+    key:5,
+    title:'摄影师详情',
+    icon:'Ding',
+    path:'/admin/phpdetails'
   }
 ]
