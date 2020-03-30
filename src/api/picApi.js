@@ -22,10 +22,20 @@ class picApi {
     let url = baseUrl + '/pic/getByPage'
     return axios.post(url, obj)
   }
-  // 通过id查询客样照
-  getphpById (_id) {
+  // 通过客样照id查询客样照
+  getById (_id) {
     let url = baseUrl + '/pic/getById'
     return axios.post(url, { _id })
+  }
+  // 通过摄影师id查询客样照
+  getByPhpId (photer) {
+    let url = baseUrl + '/pic/getByPhpId'
+    return axios.post(url, { photer })
+  }
+  // 通过关键词查询客样照
+  getByKw (obj) {
+    let url = baseUrl + '/pic/getByKw'
+    return axios.post(url, obj)
   }
   // 删除客样照
   del (obj) {
@@ -37,6 +47,7 @@ class picApi {
     let url = baseUrl + '/pic/update'
     return axios.post(url, obj)
   }
+
   // 查询所有摄影师
   getphp () {
     let url = baseUrl + '/phpdetails/getphp'
