@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import {Card,Table,Button,Popconfirm,Modal,Spin,Input,message,Form, } from 'antd';
-import { UserAddOutlined,DeleteOutlined } from '@ant-design/icons'
+import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, } from 'antd';
+import { UserAddOutlined,DeleteOutlined ,SnippetsOutlined} from '@ant-design/icons'
 import s from './index.module.less'
-import userApi from '../../api/userApi'
+import api from '../../api/loginApi'
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -19,10 +19,13 @@ class admins extends Component {
   state={
     loading:false,//页面加载状态自动为未加载成功
     modal:false,//模态框默认是隐藏的
+    modal1:false,//模态框默认是隐藏的
     spinning:false,//页面加载状态自动为未加载成功
     dataSource:[],
-    name:'',//usename
-    pwd:'',//userPassword
+    userName:'',//usename
+    passWord:'',//userPassword
+    leavel:'',
+    _id:'',
     columns:[
       {
         title: 'id',
@@ -33,6 +36,11 @@ class admins extends Component {
         title: '姓名',
         dataIndex: 'userName',
         key: 'name',
+      },
+      {
+        title: '权限',
+        dataIndex: 'leavel',
+        key: 'leavel',
       },
       {
         title: '操作',
@@ -47,7 +55,8 @@ class admins extends Component {
               cancelText="按错了"
               >
                 < Button type="danger" ghost={true} icon={<DeleteOutlined/>}>删除</Button>
-              </Popconfirm>  
+              </Popconfirm>
+          < Button type="dashed" icon={<SnippetsOutlined />} onClick={()=>this.findOne(record._id)}>修改管理员信息</Button>
               </Fragment>  
           )
         }
@@ -58,37 +67,58 @@ class admins extends Component {
   //-------------------------------------方法-------------------------------------
   //得到管理员信息
   getInfo=async()=>{
-    let result= await userApi.userList();
-    this.setState({dataSource:result.adminList,loading:true})
-    console.log(1)
+    let result= await api.get();
+    this.setState({dataSource:result.list,loading:true})
+    // console.log(1)
   }
-  componentDidMount(){
-    this.getInfo()
-    console.log( '数据请求到了')
+  async componentDidMount(){
+    await this.getInfo()
+    // console.log( '数据请求到了')
   }
   //添加管理员
   onFinish = values => {
-    console.log('72Success:', values);
-    let name=values.username;
-    let pwd=values.password;
-    this.setState({name,pwd})
+    // console.log(values);
+    let userName=values.username;
+    let passWord=values.password;
+    let leavel=values.leavel;
+    // let {userName,passWord,leavel} = this.state
+    // console.log({userName,passWord,leavel})
+    this.setState({userName,passWord,leavel})
+  };
+  onFinish1 = values => {
+    console.log(values);
+    // let userName=values.username;
+    let passWord=values.password;
+    let leavel=values.leavel;
+    let {userName} = this.state
+    console.log(userName)
+    // console.log({userName,passWord,leavel})
+    this.setState({passWord,leavel})
   };
   add=async(e)=>{   
-    let {name,pwd} = this.state
-    console.log(name,pwd)
-    let result=await userApi.add({userName:name,passWord:pwd})
-    console.log(result)
+    let {userName,passWord,leavel} = this.state
+    if(!{userName,passWord,leavel}){message.error('请先确定')}
+    // console.log(name,pwd)
+    let result=await api.add({userName,passWord,leavel})
+    // console.log(result)
     if(result.code!==0){
       message.error('用户添加失败')
       return false
     }
     message.success("添加成员成功")
+    await this.getInfo()
+
   }
   //  删除
   del=async(_id)=>{
-    let result =await userApi.del(_id)
-    if(result.code!==0){return false}
-    this.getInfo()
+    let result =await api.del(_id)
+    console.log(_id,result)
+    if(result.code!==0){
+      message.error('用户删除失败')
+      return false
+    }
+    message.success('用户删除成功')
+    await this.getInfo()
   }
   //控制添加模态框的显影
   model=()=>{
@@ -97,22 +127,57 @@ class admins extends Component {
     });
   }
   确定添加新管理员
+  findOne=async (_id)=>{
+    this.setState({
+      modal1: true,
+    })
+    let result = await api.up(_id)
+    // console.log(result)
+    let {userName,passWord,leavel} = result.list[0]
+    await this.setState({userName,passWord,leavel,_id})
+    // console.log({userName,passWord,leavel})
+  }
+  update=async ()=>{
+    let {userName,passWord,leavel,_id} = this.state
+    console.log(_id)
+    if(!{userName,passWord,leavel,_id}){message.error('请先确定')}
+    // console.log(name,pwd)
+    let result=await api.update(_id,{userName,passWord,leavel})
+    // console.log(result)
+    if(result.code!==0){
+      message.error('用户修改失败')
+      return false
+    }
+    message.success("修改成员成功")
+    await this.getInfo()
+  }
   handleOk = e => {
     this.add()
     this.setState({
       modal: false,
+      // modal1: false,
+    }); 
+    this.getInfo()
+  };
+  handleOk1 = e => {
+    this.update()
+    this.setState({
+      modal1: false,
+      // modal1: false,
     }); 
     this.getInfo()
   };
   //取消添加新管理员
   handleCancel = e => {
-    console.log('cancel');
+    // console.log('cancel');
     this.setState({
       modal: false,
+      modal1: false,
     });
   };
   render() {
-    let {dataSource,columns } = this.state
+    let {dataSource,columns ,userName,passWord,leavel} = this.state
+    console.log(userName,passWord,leavel)
     return (
       <div className={s.card}>
          <div className="site-card-border-less-wrapper" >
@@ -139,7 +204,7 @@ class admins extends Component {
       <Form.Item
         label="Username"
         name="username"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        rules={[{ required: true, message: 'Please input username!' }]}
       >
         <Input />
       </Form.Item>
@@ -147,13 +212,70 @@ class admins extends Component {
       <Form.Item
         label="Password"
         name="password"
-        rules={[{ required: true, message: 'Please input your password!' }]}
+        rules={[{ required: true, message: 'Please input password!' }]}
       >
         <Input.Password />
       </Form.Item>
+      <Form.Item
+        label="leavel"
+        name="leavel"
+      >
+        <select onChange={(e)=>{
+            this.value=e.target.value
+        }}>
+          <option value="admin">admin</option>
+          <option value="visitor">visitor</option>
+        </select>
+      </Form.Item>
        <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          ok
+          确定
+        </Button>
+      </Form.Item> 
+    </Form>
+          </Modal>
+          <Modal
+            title="修改管理员信息"
+            visible={this.state.modal1}
+            onOk={this.handleOk1}
+            onCancel={this.handleCancel}
+          >
+           <Form
+            {...layout}
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={this.onFinish1}
+            onFinishFailed={onFinishFailed}
+          >
+      <Form.Item
+        label="Username"
+        // name="username"
+        rules={[{ required: true, message: 'Please input username!' }]}
+      >
+        <Input value={userName}/>
+      </Form.Item>
+
+      <Form.Item
+        label="Password"
+        name="password"
+        rules={[{ required: true, message: 'Please input password!' }]}
+      >
+        <Input.Password/>
+      </Form.Item>
+      <Form.Item
+        label="leavel"
+        name="leavel"
+      >
+        <select value='admin' onChange={(e)=>{
+            this.value=e.target.value
+        }}>
+          <option value="admin">admin</option>
+          <option value="visitor">visitor</option>
+        </select>
+      </Form.Item>
+       <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          确定
         </Button>
       </Form.Item> 
     </Form>

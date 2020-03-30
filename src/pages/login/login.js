@@ -3,25 +3,19 @@ import {NavLink}  from 'react-router-dom'
 import { Form, Input, Button, Checkbox,message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import s from './login.module.less'
-import api from '../../api/userApi'
+import api from '../../api/loginApi'
 class login extends Component {
   onFinish =async(values) => {
-    console.log('Received values of form: ', values); 
+    // console.log('Received values of form: ', values); 
     let {userName,passWord} = values
-    api.login({userName,passWord}).then((data)=>{
-      console.log('right',data)
-      if(data.code===404){
-        message.error('用户名或密码错误', 1)
-        return false
-      }else{
-        message.success('登录成功',.5)
-        setTimeout(()=>{//设置定时器。一秒之后实现跳转
-          this.props.history.replace('/admin')
-        },1000)
-      }
+    api.login({userName,passWord}).then(()=>{
+      message.success('登录成功，3s后跳转首页',3,()=>{
+        this.props.history.replace('/admin')
+      })
     })
     .catch((err)=>{
       console.log('err',err)
+      message.error('输入有误请重试')
     })
       //可以用这个写法实现路由跳转
       // let location=(window.location.href).split('/login')[0]

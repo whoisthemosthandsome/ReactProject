@@ -16,6 +16,21 @@ class how extends Component {
     //--------------这一段改编自官网，主要渲染表头----------------
     columns : [
       {
+        title:'评论时间',
+        dataIndex:'createTime',
+        key:'createTime',
+        width:100,
+        render(createTime) {
+          // 将发布时间毫秒转为日期
+          let time = new Date(Number(createTime))
+          let year = time.getFullYear()
+          let month = time.getUTCMonth() + 1
+          let date = time.getDate()
+          let show = `${year}/${month}/${date}`
+          return(<span>{show}</span>)
+        } 
+      },
+      {
         title: '用户名',
         dataIndex: 'userName',
         key: 'userName',
@@ -63,7 +78,7 @@ class how extends Component {
               {
                  record.map((item,index)=>{
                   return(
-                    <img className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='80' height='80' alt='not found' src={baseUrl+item}></img>
+                    <img key={index} className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='80' height='80' alt='not found' src={baseUrl+item}></img>
                   )
                 })
               }
@@ -82,6 +97,8 @@ class how extends Component {
       //   //！仅做测试用 当前页面用不到
       //   title:'操作',
       //   key:'action',
+      //   width:100,
+      //   fixed:'right',
       //   render:(_record)=>{
       //     return(
       //       <div>
@@ -95,9 +112,9 @@ class how extends Component {
       //           this.addHow()
       //         }}>添加到数据库</button>
       //         {//用户端显示缩略图
-      //           this.state.imgPaths.map((item)=>{
+      //           this.state.imgPaths.map((item,index)=>{
       //           return(
-      //             <img width='50' height='50' alt='' src={baseUrl+item}/>
+      //             <img key={index} width='50' height='50' alt='' src={baseUrl+item}/>
       //           )
       //          })
       //         }
@@ -114,6 +131,7 @@ class how extends Component {
         content:'红红火火恍恍惚惚哈哈哈呱呱呱呱呱呱呱呱呱哈哈哈哈哈红红火火恍恍惚惚',
         _id:'something',
         url:'lujing',
+        createTime:'2020-3-9'
       }
     ],
     allPage:1,//总页数
@@ -122,7 +140,7 @@ class how extends Component {
   }
   //--------------------------------------生命周期以及方法/数据请求------------------------
   componentDidMount(){
-    this.getListDate()
+   // this.getListDate()
     this.Bypage()
   }
   //通过此方法控制图片的显示隐藏，做到图片的切换
@@ -146,7 +164,7 @@ class how extends Component {
     }
     let {code,msg,imgs} = await api.addPic(formdata)
     if(code){ return message.error(msg)}
-    imgs.map((item)=>{
+    imgs.map((item,index)=>{
       imgPaths.push(item)
       this.setState({imgPaths})
     })
@@ -157,7 +175,6 @@ class how extends Component {
     let url=this.state.imgPaths;
     let star=5;
     let staffName='bob';
-    console.log('126url',url)
     api.addHow ({userName,content,url,star,staffName})
     .then(()=>{
       console.log('109行，add成功')
@@ -173,7 +190,6 @@ class how extends Component {
     .then((res)=>{
       if(res.code===0){
          this.setState({list:res.data})
-
           console.log(177,this.state.list)
       }else {
         message.error('查看评论失败')
