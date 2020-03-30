@@ -72,7 +72,7 @@ class PicList extends Component {
         return (
         <img src={
           url?baseUrl + url:baseUrl + recode.imgs[0]
-        } alt='' style={{width:'120px', maxHeight:'80px'}}/>
+        } alt='not found' style={{width:'120px', maxHeight:'80px'}}/>
         )
       } },
       { title: '操作', key:'action',width: 120, fixed: 'right', align: 'center', render: (recode) => {
