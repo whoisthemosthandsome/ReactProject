@@ -47,7 +47,7 @@ export default [
     path:'/admin/php'
   },
   {
-    key:'user',
+    key:'user/',
     title:'用户',
     icon:'user',
     path:"/admin/user",
