@@ -44,7 +44,7 @@ class how extends Component {
       },
       {
         title: '评分',
-        dataIndex: 'staffName',
+        dataIndex: 'star',
         key: 'star',
         width:100,
       },
