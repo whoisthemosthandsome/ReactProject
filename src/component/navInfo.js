@@ -9,25 +9,7 @@ export default [
     key:2,
     title:'管理页管理',
     icon:'Dashboard',
-    path:'/admin/administrator',
-    children:[
-      {
-      key:2-1,
-      title:'成员信息页',
-      path:'/admin/info'
-      },
-      {
-        key:2-2,
-        title:"修改页",
-        path:'/admin/change',
-      }
-    ]
-  },
-  {
-    key:3,
-    title:'表单页',
-    icon:'sheet',
-    path:'/admin/biaodan'
+    path:'/admin/admin',
   },
   {
     key:'ban',
@@ -40,5 +22,22 @@ export default [
     title:'客样照',
     icon:'banner',
     path:'/admin/picList'
+  },{
+    key:'user',
+    title:'用户信息',
+    icon:'Dashboard',
+    path:'/admin/user',
+    children:[
+      {
+      key:'user-1',
+      title:'查看用户',
+      path:'/admin/user/info'
+      },
+      {
+        key:'user-2',
+        title:"注销用户",
+        path:'/admin/user/del',
+      }
+    ]
   },
 ]

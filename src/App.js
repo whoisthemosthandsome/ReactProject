@@ -1,11 +1,8 @@
 import React from 'react';
 
 import './reset.css'
-<<<<<<< HEAD
-=======
 
->>>>>>> 263c81afa73c79cb07470e20de09f726a0127564
-import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
+import {HashRouter,Route,Redirect} from 'react-router-dom'
 //后台系统主页
 import Admin from './pages/Admin/admin'
 //用户登录页面
@@ -23,14 +20,15 @@ import Banner from './pages/Banner'
 import PicList from './pages/Pic/PicList'
 // 客样照添加
 import PicAdd from './pages/Pic/PicAdd'
+import User from './pages/User/user'
 function App() {
   return (
     <div>
       <HashRouter>
         {/* <NavLink to='/login'>dnlgu</NavLink> */}
         
-        <Switch>
-          <Redirect exact from='/' to='/login' ></Redirect>  
+        {/* <Switch> */}
+          {/* <Redirect exact from='/' to='/login' ></Redirect>   */}
           <Route path='/login' component={Login}/>
           <Route path='/reg' component={Reg}/>
           <Route path='/update' component={Update}/>
@@ -39,15 +37,16 @@ function App() {
             return(
               <Admin>
                 <Route path='/admin/echart' component={Echart}></Route>
-                <Route path='/admin/Info' component={AdminInfo}></Route>
+                <Route path='/admin/admin' component={AdminInfo}></Route>
                 <Route path='/admin/option1' component={Option1}/>
                 <Route path='/admin/banner' component={Banner}></Route>
                 <Route path='/admin/picList' component={PicList}></Route>
                 <Route path='/admin/picAdd' component={PicAdd}></Route>
+                <Route path='/admin/user' component={User}></Route>
               </Admin>
             )
           }}/>
-        </Switch>
+        {/* </Switch> */}
         
         
       </HashRouter>  
