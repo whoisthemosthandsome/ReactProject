@@ -78,7 +78,7 @@ class how extends Component {
               {
                  record.map((item,index)=>{
                   return(
-                    <img className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='80' height='80' alt='not found' src={baseUrl+item}></img>
+                    <img key={index} className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='80' height='80' alt='not found' src={baseUrl+item}></img>
                   )
                 })
               }
@@ -93,35 +93,35 @@ class how extends Component {
         ellipsis: true,
         width:200
       },
-      {
-        //！仅做测试用 当前页面用不到
-        title:'操作',
-        key:'action',
-        width:100,
-        fixed:'right',
-        render:(_record)=>{
-          return(
-            <div>
-              <input multiple="multiple" type="file" id='file'/>
-              <button onClick={()=>{
-                this.addPic()
-              }
-              }
-              >添加图片</button>
-              <button onClick={()=>{
-                this.addHow()
-              }}>添加到数据库</button>
-              {//用户端显示缩略图
-                this.state.imgPaths.map((item)=>{
-                return(
-                  <img width='50' height='50' alt='' src={baseUrl+item}/>
-                )
-               })
-              }
-            </div>
-          )
-        }
-      }
+      // {
+      //   //！仅做测试用 当前页面用不到
+      //   title:'操作',
+      //   key:'action',
+      //   width:100,
+      //   fixed:'right',
+      //   render:(_record)=>{
+      //     return(
+      //       <div>
+      //         <input multiple="multiple" type="file" id='file'/>
+      //         <button onClick={()=>{
+      //           this.addPic()
+      //         }
+      //         }
+      //         >添加图片</button>
+      //         <button onClick={()=>{
+      //           this.addHow()
+      //         }}>添加到数据库</button>
+      //         {//用户端显示缩略图
+      //           this.state.imgPaths.map((item,index)=>{
+      //           return(
+      //             <img key={index} width='50' height='50' alt='' src={baseUrl+item}/>
+      //           )
+      //          })
+      //         }
+      //       </div>
+      //     )
+      //   }
+      // }
     ],
     dataSource:[
       {
