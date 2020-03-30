@@ -19,23 +19,23 @@ class how extends Component {
         title: '用户名',
         dataIndex: 'userName',
         key: 'userName',
-       // width:100,//设置该行宽度
+        width:100,//设置该行宽度
       },
       {
         title: '评价摄影师',
         dataIndex: 'staffName',
         key: 'staffName',
-       // width:150,
+        width:150,
       },
       {
         title: '评分',
         dataIndex: 'staffName',
         key: 'star',
-       // width:100,
+        width:100,
       },
       {
         title:'图片',
-        width:180,
+        width:200,
         dataIndex:'url',
         key:'url',
         render:(_record)=>{
@@ -55,6 +55,7 @@ class how extends Component {
       {
         title:'缩略图',
         dataIndex:'url',
+        width:100,
         key:'pic',
         render:(record)=>{
           return(
@@ -62,7 +63,7 @@ class how extends Component {
               {
                  record.map((item,index)=>{
                   return(
-                    <img className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='100' height='100' alt='not found' src={baseUrl+item}></img>
+                    <img className={this.state.img===item?"how_show__2w4xU":'how_hide__1iejN'} width='80' height='80' alt='not found' src={baseUrl+item}></img>
                   )
                 })
               }
@@ -75,7 +76,7 @@ class how extends Component {
         dataIndex: 'content',
         key: 'content',
         ellipsis: true,
-        //width:300
+        width:200
       },
       // {
       //   //！仅做测试用 当前页面用不到
@@ -201,10 +202,10 @@ class how extends Component {
       <div className={s.how} >
          <Card title='用户评论'>
           <Table 
-          style={{height:300,overflow:'hidden'}}
+          style={{height:400}}
           pagination={false} 
           rowKey='_id'
-          scroll={{y:300}}
+          scroll={{y:300,x:950}}
           dataSource={list}                            
           columns={columns} />
           <Pagination className={s.pagination} hideOnSinglePage='true' Current={page} total={allPage} pageSize={pageSize} onChange={(page,_pageSize)=>{
