@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import picApi from '@api/picApi'
 import baseUrl from '@ultils/baseUrl'
 import Style from './index.module.less'
-import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Select, Option } from 'antd'
+import XLSX from 'xlsx'
+import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 class PicList extends Component {
   state = {
@@ -144,6 +145,52 @@ class PicList extends Component {
     this.setState({list, count}) // 查询成功
     this.setState({spinning: false}) // 加载中动画隐藏
   }
+  // 导出excel
+  export = async () => {
+    let { code, list } = await picApi.get()
+    if (code) { return message.error('导出失败') }
+    console.log(list)
+    // 表头
+    let thead = [ '序号', '摄影师', '图片路径','id','标题','描述','浏览','点赞','发布时间','摄影类型','图片总数' ]
+    // for (const key in list[0]) {
+    //   if (key !== '__v') {
+    //     thead.push(key)
+    //   }
+    // }
+    // 内容
+    let table = list.map((item, index) => {
+      let arr = [ index+1 ]
+      for (const key in item) {
+        let value = item[key]
+        if (key === 'photer') {
+          value = item[key].length===0?'未知摄影师':item[key][0].phpName
+        }
+        if (key === 'createTime') {
+          let time = new Date(Number(item[key]))
+          let year = time.getFullYear()
+          let month = time.getMonth() + 1
+          let date = time.getDate()
+          value = `${year}/${month}/${date}`
+        }
+        if (key === 'imgs') {
+          value = ''
+          item[key].map(((url)=>{
+            value = value + url + '|'
+          }))
+        }
+        if (key === '__v') { value = item.imgs.length }
+        arr.push(value)
+      }
+      return arr
+    })
+    table.unshift(thead)
+    console.log(table)
+    // 导出
+    let ws = XLSX.utils.aoa_to_sheet(table) // 数组转为标签页
+    let wb = XLSX.utils.book_new() // 创建工作薄
+    XLSX.utils.book_append_sheet(wb, ws) // 标签页写入工作薄
+    XLSX.writeFile(wb, '客样照.xlsx') // 工作薄导出为excel文件
+  }
   // 初始化
   componentDidMount = async () => {
     this.getListData() // 初始化客样照列表
@@ -187,7 +234,7 @@ class PicList extends Component {
               </div>
             </div>
             <div className={Style.right}>
-              <Button type='primary' className={Style.btn}>导出EXCEL</Button>
+              <Button type='primary' className={Style.btn} onClick={this.export}>导出EXCEL</Button>
               <div className={Style.count}><span>{`共${count}条`}</span></div>
             </div>
           </div>
