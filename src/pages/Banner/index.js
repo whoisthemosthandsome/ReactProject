@@ -87,7 +87,6 @@ class Banner extends Component {
       return arr
     })
     table.unshift(thead)
-    console.log(table)
     // 导出
     let ws = XLSX.utils.aoa_to_sheet(table) // 数组转为标签页
     let wb = XLSX.utils.book_new() // 创建工作薄
