@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin ,Select} from 'antd';
+import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin } from 'antd';
 import { UserAddOutlined,DeleteOutlined} from '@ant-design/icons'
 import s from './index.module.less'
 import api from '../../api/bookApi'
@@ -19,7 +19,7 @@ class admins extends Component {
         modal:false,//模态框默认是隐藏的
         dataSource:[],
         name:'',//usename
-        phoName:'',//头像
+        phoName:'',//摄影师
         _id:'',
         date:'',
         loading:false,
@@ -81,7 +81,7 @@ class admins extends Component {
         this.setState({loading:true})
         // console.log(result)
         this.setState({dataSource:result.list})
-        console.log(this.state.dataSource)
+        // console.log(this.state.dataSource)
         this.setState({loading:false})
     }
     async componentDidMount(){
@@ -90,19 +90,25 @@ class admins extends Component {
         this.setState({php:result.data})
         let res = await api.getuser()
         this.setState({user:res.list})
+        this.setState = (state, callback) => {
+            return false
+        }
+    
         // let {_id,phpName} = result
-        console.log(result,this.state.php,res)
+        // console.log(result,this.state.php,res)
     }
     //添加用户操作
     onFinish = values => {
-        let name=values.name;
+        // let name=values.name;
         let date=values.date;
-        let phoName=values.phoName;
-        this.setState({name,date,phoName})
+        // let phoName=values.phoName;
+        // console.log(name,date,phoName )
+        this.setState({date})
     };
     //添加用户操作函数
     add=async(e)=>{   
         let {name,date,phoName} = this.state
+        // console.log({name,date,phoName} )
         if(!{name,date,phoName}){message.error('请先确定')}
         let result=await api.add({name,date,phoName})
         if(result.code!==0){
@@ -145,7 +151,7 @@ class admins extends Component {
         });
     };
     render() {
-    let {dataSource,columns ,php,user} = this.state
+    let {dataSource,columns ,php,user,name,phoName} = this.state
     return (
         <div className={s.card}>
             <Spin spinning={this.state.loading}>
@@ -172,7 +178,11 @@ class admins extends Component {
                 <Form.Item
                     label="客户"
                 >
-                    <select name="name">
+                    <select value={name} onChange={(e)=>{
+                        this.setState({name:e.target.value})
+                    }
+                    }>
+                        <option value='0' key='a'>请选择用户</option>
                         {
                             user.map((item,index) => {
                                 return(<option value={item._id} key={item._id}>{item.userName}</option>)
@@ -188,7 +198,12 @@ class admins extends Component {
                     <Input />
                 </Form.Item>
                 <Form.Item label="摄影师" >
-                    <select name="phoName">
+                    <select value={phoName} onChange={(e)=>{
+                        this.setState({phoName:e.target.value})
+
+                    }
+                    }>
+                        <option value='0' key='a'>请选择摄影师</option>
                         {
                             php.map((item,index) => {
                                 return(<option value={item._id} key={item._id}>{item.phpName}</option>)

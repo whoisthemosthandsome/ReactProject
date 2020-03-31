@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin} from 'antd';
-import { UserAddOutlined,DeleteOutlined ,SnippetsOutlined} from '@ant-design/icons'
+import { UserAddOutlined,DeleteOutlined } from '@ant-design/icons'
 import s from './index.module.less'
 import api from '../../api/orderApi'
+import baseUrl from '../../ultils/baseUrl'
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -22,6 +23,9 @@ class admins extends Component {
         _id:'',
         date:'',
         picid:'',
+        user:[],
+        php:[],
+        pic:[],
         loading:false,
         columns:[
         {
@@ -31,17 +35,42 @@ class admins extends Component {
         },
         {
             title: '姓名',
-            dataIndex: 'userName',
-            key: 'name',
+            render:(record)=>{
+                return(
+                    record.userName[0].userName
+                )
+            },
+            key: 'userName',
         },
         {
             title: '摄影师',
-            dataIndex: 'phoid',
+            render:(record)=>{
+                return(
+                    record.phoid[0].phpName
+                )
+            },
             key: 'phoid',
         },
         {
+            title: '照片类型',
+            render:(record)=>{
+                return(
+                    record.picid[0].phpType
+                )
+            },
+            key: 'picid',
+        },
+        {
             title: '照片',
-            dataIndex: 'picid',
+            render:(record)=>{
+                return(
+                    record.picid[0].imgs.map((item,index)=>{
+                        return(
+                            <img src={baseUrl+item} alt="未找到" key={index} width='50' height='50'/>
+                        )
+                    })
+                )
+            },
             key: 'picid',
         },
         {
@@ -74,19 +103,31 @@ class admins extends Component {
     getInfo=async()=>{
         this.setState({loading:true})
         let result= await api.get();
-        this.setState({dataSource:result.list,loading:true})
+        // console.log(result)
+        this.setState({dataSource:result.list})
         this.setState({loading:false})
     }
     async componentDidMount(){
         await this.getInfo()
+        let res = await api.getuser()
+        this.setState({user:res.list})
+        let result = await api.getphp()
+        this.setState({php:result.data})
+        let resu = await api.getpic()
+        // console.log(resu)
+        this.setState({pic:resu.list})
+        this.setState = (state, callback) => {
+            return false
+        }
+        // console.log(this.state.pic)
     }
     //添加用户操作
     onFinish = values => {
-        let userName=values.username;
+        // let userName=values.username;
         let date=values.date;
-        let phoid=values.phoid;
-        let picid=values.picid;
-        this.setState({userName,date,phoid,picid})
+        // let phoid=values.phoid;
+        // let picid=values.picid;
+        this.setState({date})
     };
     //添加用户操作函数
     add=async(e)=>{   
@@ -132,7 +173,7 @@ class admins extends Component {
         });
     };
     render() {
-    let {dataSource,columns ,} = this.state
+    let {dataSource,columns ,user,pic,php,userName,phoid,picid} = this.state
     return (
         <div className={s.card}>
             <Spin spinning={this.state.loading}>
@@ -157,11 +198,19 @@ class admins extends Component {
                 onFinishFailed={onFinishFailed}
                 >
                 <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input username!' }]}
+                    label="客户"
                 >
-                    <Input />
+                    <select value={userName} onChange={(e)=>{
+                        this.setState({userName:e.target.value})
+                    }
+                    }>
+                        <option value='0' key='a'>请选择用户</option>
+                        {
+                            user.map((item,index) => {
+                                return(<option value={item._id} key={item._id}>{item.userName}</option>)
+                            })
+                        }
+                    </select>
                 </Form.Item>
                 <Form.Item
                     label="date"
@@ -170,17 +219,31 @@ class admins extends Component {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item
-                    label="phoid"
-                    name="phoid"
-                >
-                    <Input />
+                <Form.Item label="摄影师" >
+                    <select value={phoid} onChange={(e)=>{
+                        this.setState({phoid:e.target.value})
+                    }
+                    }>
+                        <option value='0' key='a'>请选择摄影师</option>
+                        {
+                            php.map((item,index) => {
+                                return(<option value={item._id} key={item._id}>{item.phpName}</option>)
+                            })
+                        }
+                    </select>
                 </Form.Item>
-                <Form.Item
-                    label="picid"
-                    name="picid"
-                >
-                    <Input />
+                <Form.Item label="照片" >
+                    <select value={picid} onChange={(e)=>{
+                        this.setState({picid:e.target.value})
+                    }
+                    }>
+                        <option value='0' key='a'>请选择照片类型</option>
+                        {
+                            pic.map((item,index) => {
+                                return(<option value={item._id} key={item._id}>{item.phpType}</option>)
+                            })
+                        }
+                    </select>
                 </Form.Item>
                 <Form.Item {...tailLayout}>
                     <Button type="primary" htmlType="submit">
