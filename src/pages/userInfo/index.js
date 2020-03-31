@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import baseUrl from '../../ultils/baseUrl'
 import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin} from 'antd';
 import { UserAddOutlined,DeleteOutlined ,SnippetsOutlined} from '@ant-design/icons'
 import s from './index.module.less'
@@ -24,7 +25,6 @@ class admins extends Component {
         avatar:'',//头像
         order:'',//订单
         _id:'',
-        phoneNumber:'',
         loading:false,
         columns:[
         {
@@ -41,9 +41,10 @@ class admins extends Component {
             title: '头像',
             key: 'avatar',
             render:(record)=>{
+                // console.log(record.avatar)
                 return(
                     <Fragment>
-                        <img src={record.avatar} alt="未找到"/>
+                        <img src={baseUrl+record.avatar} alt="未找到" width='200' height='100'/>
                     </Fragment>
                 )
             }
@@ -66,7 +67,7 @@ class admins extends Component {
                 <Fragment> 
                     <Popconfirm
                     title='确定要删除吗'
-                    onConfirm={()=>this.del(record._id)}
+                    onConfirm={()=>this.del({_id:record._id,avatar:record.avatar})}
                     okText="是的"
                     cancelText="按错了"
                     >
@@ -95,18 +96,16 @@ class admins extends Component {
         let userName=values.username;
         let passWord=values.password;
         let order=values.order;
-        let avatar=values.avatar;
         let phoneNumber=values.phoneNumber;
-        this.setState({userName,passWord,order,avatar,phoneNumber})
+        this.setState({userName,passWord,order,phoneNumber})
     };
     //修改用户
     onFinish1 = values => {
         // console.log(values);
         let passWord=values.password;
         let order=values.order;
-        let avatar=values.avatar;
         let phoneNumber=values.phoneNumber;
-        this.setState({passWord,order,avatar,phoneNumber})
+        this.setState({passWord,order,phoneNumber})
     };
     //添加用户操作函数
     add=async(e)=>{   
@@ -121,8 +120,9 @@ class admins extends Component {
         this.getInfo()
     }
     //  删除用户
-    del=async(_id)=>{
-        let result =await api.del(_id)
+    del=async({_id,avatar})=>{
+        // console.log({_id,avatar})
+        let result =await api.del({_id,avatar})
         console.log(_id,result)
         if(result.code!==0){
         message.error('用户删除失败')
@@ -137,7 +137,6 @@ class admins extends Component {
         modal: true,
         });
     }
-    //确定添加新管理员
     findOne=async (_id)=>{
         this.setState({
         modal1: true,
@@ -150,7 +149,7 @@ class admins extends Component {
     update=async ()=>{
         let {userName,passWord,order,phoneNumber,avatar,_id} = this.state
         // console.log(_id)
-        console.log({userName,passWord,order,phoneNumber,avatar,_id})
+        // console.log({userName,passWord,order,phoneNumber,avatar,_id})
         if(!{userName,passWord,order,phoneNumber,avatar,_id}){message.error('请先确定')}
         let result=await api.update({_id,userName,passWord,order,phoneNumber,avatar})
         //传参数写一个 后端结构赋值
@@ -185,13 +184,25 @@ class admins extends Component {
         modal1: false,
         });
     };
+    upload= async ()=>{
+        // 1. 获取图片里的内容
+        let  file = this.refs.img.files[0]
+        let data = new FormData()
+        if(!file){ return message.error('请先选择一张图片')}
+        data.append('user', file)
+        let { code,imgs } = await api.addPic(data)
+        if(code){return message.error('上传失败')}
+        // console.log(imgs,this.state.avatar)
+        this.setState({avatar:imgs[0]})
+        // console.log(this.state.avatar)
+    }
     render() {
-    let {dataSource,columns ,userName,avatar,order,phoneNumber} = this.state
+    let {dataSource,columns ,userName,order,phoneNumber} = this.state
     return (
         <div className={s.card}>
             <Spin spinning={this.state.loading}>
                 <div className="site-card-border-less-wrapper" >
-                    <Card title="Card title" bordered={false} >
+                    <Card title="用户操作" bordered={false} >
                         < Button  type="primary" onClick={this.model} icon={<UserAddOutlined />}>添加</Button>
                         <Table scroll={{y:800}}  rowKey='_id' loading={this.loading} pagination={false} dataSource={dataSource} columns={columns} className={s.table}/>
                     </Card>
@@ -224,12 +235,12 @@ class admins extends Component {
                 >
                     <Input.Password />
                 </Form.Item>
-                <Form.Item
+                {/* <Form.Item
                     label="avatar"
                     name="avatar"
-                >
-                    <Input />
-                </Form.Item>
+                > */}
+                    <input type="file" ref='img'/> <button onClick={this.upload}>上传图片</button>
+                {/* </Form.Item> */}
                 <Form.Item
                     label="order"
                     name="order"
@@ -277,12 +288,7 @@ class admins extends Component {
                 >
                     <Input.Password/>
                 </Form.Item>
-                <Form.Item
-                    label="avatar"
-                    name="avatar"
-                >
-                    <Input placeholder={avatar} />
-                </Form.Item>
+                <input type="file" ref='img'/> <button onClick={this.upload}>上传图片</button>
                 <Form.Item
                     label="order"
                     name="order"
