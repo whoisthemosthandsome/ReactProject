@@ -27,5 +27,9 @@ class api {
         let url = baseUrl + '/user/get'
         return axios.post(url)
     }
+    getpic(){
+        let url = baseUrl + '/pic/get'
+        return axios.post(url)
+    }
 }
 export default new api()

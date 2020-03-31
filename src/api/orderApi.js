@@ -17,5 +17,18 @@ class api {
         let url = baseUrl +'/order/getone'
         return axios.post(url,_id)
     }
+    //查询用户
+    getuser(){
+        let url = baseUrl + '/user/get'
+        return axios.post(url)
+    }
+    getphp(){
+        let url = baseUrl + '/php/getphp'
+        return axios.post(url)
+    }
+    getpic(){
+        let url = baseUrl + '/pic/get'
+        return axios.post(url)
+    }
 }
 export default new api()
