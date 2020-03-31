@@ -7,6 +7,7 @@ import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Sele
 import { PlusOutlined, SearchOutlined, ExportOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 class PicList extends Component {
   state = {
+    showSizeChanger: true, // 切换每页条数
     page: 1, // 当前显示页
     pageSize: 2, // 每页条数
     count: 0, // 总条数
@@ -135,7 +136,7 @@ class PicList extends Component {
       return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
     }
     // 关键词不为空 切换关键词查询
-    this.setState({spinning: true}) // 加载中动画显示
+    this.setState({spinning: true, showSizeChanger: false}) // 加载中动画显示
     this.setState({function: this.search}) // 分页点击处理方法设置为关键词查询
     let { code, msg , list, count } = await picApi.getByKw({kw}) // 搜索请求
     if(code){ return message.error(msg) } // 查询失败
@@ -151,7 +152,7 @@ class PicList extends Component {
       return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
     }
     // 选中指定摄影师 切换至摄影师查询
-    this.setState({spinning: true}) // 加载中动画显示
+    this.setState({spinning: true, showSizeChanger: false}) // 加载中动画显示
     this.setState({function: this.getByPhoter}) // 分页点击处理方法设置为摄影师查询
     let { code, msg , list, count } = await picApi.getByPhpId(photer)
     if(code){ return message.error(msg) } // 查询失败
@@ -161,7 +162,7 @@ class PicList extends Component {
   }
   // 获取客样照列表
   getListData = async () => {
-    this.setState({spinning: true}) // 加载中动画显示
+    this.setState({spinning: true, showSizeChanger: true}) // 加载中动画显示
     let { page, pageSize } = this.state
     let {code, msg , list, count} = await picApi.getByPage({ page, pageSize }) // 查询请求
     if(code){ return message.error(msg) } // 查询失败
@@ -242,7 +243,7 @@ class PicList extends Component {
     this.setState({photers: data}) // 请求成功初始化摄影师列表
   }
   render() {
-    let { columns, list, spinning, page, pageSize, count, kw, photers, photer } = this.state
+    let { columns, list, spinning, page, pageSize, count, kw, photers, photer, showSizeChanger } = this.state
     return (
       <div className={Style.box}>
         <Card title='客样照' className={Style.card}>
@@ -287,7 +288,7 @@ class PicList extends Component {
           {/* 分页 */}
           <Pagination showQuickJumper current={page}
             total={count} pageSize={pageSize} style={{marginTop: '10px', textAlign: 'center'}}
-            showSizeChanger={true} pageSizeOptions={['2','4','10','20']} 
+            showSizeChanger={showSizeChanger} pageSizeOptions={['2','4','10','20']} 
             onChange={(page) => { // 页码变化更新页面
               this.setState({page},() => { this.state.function()})
             }}
