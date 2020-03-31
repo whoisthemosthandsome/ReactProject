@@ -164,6 +164,7 @@ class PicList extends Component {
   // 分页
   pagination (data) {
     let arr = []
+    this.setState({page: 1})
     let { page, pageSize } = this.state
     let skip = (page -1) * pageSize
     let limit = page * pageSize
