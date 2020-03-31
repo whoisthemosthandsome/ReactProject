@@ -12,7 +12,7 @@ const layout = {
     span: 16,
   },
 }
-class PicAdd extends Component {
+class PicUpdate extends Component {
   state = {
     _id: '', // 客样照id
     imgs: [], // 图片路径
@@ -185,4 +185,4 @@ class PicAdd extends Component {
   }
 }
 
-export default PicAdd
+export default PicUpdate

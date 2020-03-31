@@ -3,7 +3,6 @@ import picApi from '@api/picApi'
 import Style from './index.module.less'
 import { Card, Button, Form, Input, Select, message } from 'antd'
 import { UploadOutlined  } from '@ant-design/icons'
-import { formatCountdown } from 'antd/lib/statistic/utils'
 const layout = {
   labelCol: {
     span: 4,
