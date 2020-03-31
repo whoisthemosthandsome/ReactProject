@@ -64,5 +64,11 @@ export default [
         path:'/admin/user/book',
       }
     ]
+  },
+  {
+    key:'look',
+    title:'数据统计',
+    icon:'sheet',
+    path:'/admin/look'
   }
 ]

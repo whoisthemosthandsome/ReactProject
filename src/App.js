@@ -21,6 +21,9 @@ import PicAdd from './pages/Pic/PicAdd'
 import User from './pages/User/user'
 // 客样照修改
 import PicUpdate from './pages/Pic/PicUpdate'
+//数据统计列表
+import Look from './pages/echart/echart'
+//import lazyload from './pages/how/lazyload';
 function App() {
   return (
     <div>
@@ -45,6 +48,7 @@ function App() {
                 <Route path='/admin/picList' component={PicList}></Route>
                 <Route path='/admin/picAdd' component={PicAdd}></Route>
                 <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
+                <Route path='/admin/look' component={Look}></Route> 
               </Admin>
             )
           }}/>

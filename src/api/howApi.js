@@ -20,6 +20,18 @@ class Admin {
    // console.log('后端20行param', param)
     return axios.post(url,param)
   }
+  Analyze(){
+    let url=baseURL+'/phpdetails/getphp'
+    return axios.post(url)
+  }
+  byKw(kw,page,pageSize){
+    let url=baseURL+'/how/byKw'
+    return axios.post(url,{kw,page,pageSize})
+  }
+  getStaff(){
+    let url = baseURL + '/phpdetails/getphp'
+    return axios.post(url)
+  }
 }
 
 export default new Admin()

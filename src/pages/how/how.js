@@ -1,9 +1,15 @@
 /* eslint-disable no-unused-expressions */
 import React, { Component} from 'react';
-import {Card,Table,Pagination, message } from 'antd'
+import {Card,Table,Pagination, message ,Select} from 'antd'
 import s from './how.module.less'
 import api from '../../api/howApi'
 import baseUrl from '../../ultils/baseUrl'
+const { Option } = Select;
+//点击页码数，触发函数。函数判断当前的situation是不是true 
+//不是search 就只写bypage  situation改为false
+//true的话  再做判断  查看关键字是空还是全部 -- bypage  改situation为false
+//         具体关键字就-- byKw，situation值为true
+
 //------------------------------------------组件正文-------------------------------------------
 class how extends Component {
   //-----------------------------------state值----------------------------------------
@@ -13,6 +19,12 @@ class how extends Component {
     url:'',//路径
     img:'not found',//仅缩略图用的路径
     show:false,//控制图片显示隐藏的变量
+    staffs:[],//所有摄影师名字
+    kw:'',//关键字
+    allPage:1,//总页数
+    pageSize:3,//每页显示条数
+    page:1,// 当前页,
+    spinning:false,//
     //--------------这一段改编自官网，主要渲染表头----------------
     columns : [
       {
@@ -34,6 +46,7 @@ class how extends Component {
         title: '用户名',
         dataIndex: 'userName',
         key: 'userName',
+        align: 'center',
         width:100,//设置该行宽度
       },
       {
@@ -41,16 +54,19 @@ class how extends Component {
         dataIndex: 'staffName',
         key: 'staffName',
         width:150,
+        align: 'center',
       },
       {
         title: '评分',
         dataIndex: 'star',
         key: 'star',
+        align: 'center',
         width:100,
       },
       {
         title:'图片',
         width:200,
+        align: 'center',
         dataIndex:'url',
         key:'url',
         render:(_record)=>{
@@ -72,6 +88,7 @@ class how extends Component {
         dataIndex:'url',
         width:100,
         key:'pic',
+        align: 'center',
         render:(record)=>{
           return(
             <div>
@@ -91,7 +108,8 @@ class how extends Component {
         dataIndex: 'content',
         key: 'content',
         ellipsis: true,
-        width:200
+        width:200,
+        align: 'center',
       },
       // {
       //   //！仅做测试用 当前页面用不到
@@ -125,29 +143,66 @@ class how extends Component {
     ],
     dataSource:[
       {
-        userName:'username',
+        userName:'bob',
         star:5,
-        staffName:'bob',
+        staffName:'邓一',
         content:'红红火火恍恍惚惚哈哈哈呱呱呱呱呱呱呱呱呱哈哈哈哈哈红红火火恍恍惚惚',
         _id:'something',
         url:'lujing',
-        createTime:'2020-3-9',
+        createTime:'',
       }
     ],
-    allPage:1,//总页数
-    pageSize:3,//每页显示条数
-    page:1// 当前页
   }
   //--------------------------------------生命周期以及方法/数据请求------------------------
   componentDidMount(){
-   // this.getListDate()
-    this.Bypage()
+    this.init()//得到所有摄影师名字
+    this.Bypage() //初始化
+  } 
+  judgeSituation(kw){//通过判断当前kw的值来判断应该执行的方法
+    if(kw==='全部'){
+     this.Bypage()
+    }else{//有关键字
+     this.search(kw)
+    }
   }
+
+  search=(kw)=>{//通过关键字搜索生成列表
+    let {page,pageSize} = this.state
+    api.byKw(kw,page,pageSize)
+    .then((data)=>{
+      this.setState({
+        list:data.list,
+        allPage:data.allCount,
+        page,pageSize,
+      })
+  })
+
+  }
+  init(){//初始化得到所有摄影师名字
+    let {staffs} = this.state
+    api.getStaff()
+    .then((data)=>{
+      staffs.push('全部')
+      data.data.map((item,index)=>{
+        if(staffs.indexOf(item.phpName)===-1){
+          staffs.push(item.phpName)
+        }
+      })
+      this.setState({staffs})
+    })
+  }
+  
   //通过此方法控制图片的显示隐藏，做到图片的切换
   showImg(img){
     this.setState({show:!this.state.show})
     this.setState({img:img.item})
-    console.log('img',img)
+  }
+  //下拉框选中搜索得到相应摄影师的数据
+  Change=(value)=> {
+    let {kw} = this.state
+    kw = value //点击的内容是kw
+    this.setState({kw})
+    this.judgeSituation(kw)
   }
   //上传图片到public在页面显示------------------------ ！仅为用户页面做测试用，本组件用不到此功能！----------------------------
   addPic=async()=>{
@@ -170,33 +225,34 @@ class how extends Component {
     })
   }
   addHow=async()=>{//添加到数据库
-    let userName='userName';
-    let content='content';
+    let userName='曦曦';
+    let content='啊啊发萨芬啊啊啊啊啊啊啊嘎嘎';
     let url=this.state.imgPaths;
     let star=5;
-    let staffName='bob';
+    let staffName='陈艺果';
     api.addHow ({userName,content,url,star,staffName})
     .then(()=>{
-      console.log('109行，add成功')
       this.getListDate()
     })
-    .catch((err)=>{
-      console.log('112行上传出错',err)
-    })
+   
   }
   //------------------------查看所有评论接口----------------------------
   getListDate =async()=>{
+    let { staffs}= this.state
     api.userList()
     .then((res)=>{
       if(res.code===0){
          this.setState({list:res.data})
-          console.log(177,this.state.list)
+         staffs.push('全部')
+         this.state.list.map((item,index)=>{
+           if(staffs.indexOf(item.staffName)===-1){
+              staffs.push(item.staffName)
+           }
+         })
+         this.setState({staffs}) 
       }else {
         message.error('查看评论失败')
       }
-    })
-    .catch((err)=>{
-      console.log(err)
     })
   }
    //--------------------------分页查询--------------------------------
@@ -204,30 +260,52 @@ class how extends Component {
       let {page,pageSize}  = this.state
       api.Bypage({page,pageSize})
       .then((data)=>{
-        console.log(data)
         this.setState({list:data.list,
           allPage:data.allCount,
           page,pageSize})
       })
    }
+  
   //---------------------------------根据数据渲染页面------------------------------------
   render() {
-    let {list,allPage,pageSize,page,columns} = this.state
+    let {list,allPage,pageSize,page,columns,staffs} = this.state
     return (
       <div className={s.how} >
-         <Card title='用户评论'>
-          <Table 
-          style={{height:400}}
+         <Card title='用户评论' style={{textAlign:"center"}}>
+          <span>得到摄影师所有评价</span>
+         <Select
+          showSearch
+          style={{ width: 150,marginBottom:30,marginLeft:20 }}
+          placeholder="选择摄影师"
+          optionFilterProp="children"
+          onChange={this.Change}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {
+            staffs.map((item,index)=>{
+              return (<Option  key={index}value={item}>{item}</Option>)
+            })
+          }
+        </Select>
+       
+         <Table 
+          className={s.table}
+          style={{height:400,textAlign:"center"}}
           pagination={false} 
           rowKey='_id'
           scroll={{y:300,x:950}}
           dataSource={list}                            
           columns={columns} />
-          <Pagination className={s.pagination} hideOnSinglePage='true' Current={page} total={allPage} pageSize={pageSize} onChange={(page,_pageSize)=>{
+        
+          <Pagination className={s.pagination} hideOnSinglePage='true' Current={page} total={allPage} pageSize={pageSize} 
+          onChange={(page)=>{
           this.setState({page},()=>{
-            this.Bypage()  
+            this.judgeSituation(this.state.kw)
           })
-        }}/>
+        }}
+        />
         </Card>
       </div>
     )
