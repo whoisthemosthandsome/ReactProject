@@ -7,7 +7,6 @@ import { Card, Button, Table, message, Popconfirm, Spin, Pagination, Input, Sele
 import { PlusOutlined, SearchOutlined, ExportOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 class PicList extends Component {
   state = {
-    showSizeChanger: true, // 切换每页条数
     page: 1, // 当前显示页
     pageSize: 2, // 每页条数
     count: 0, // 总条数
@@ -57,7 +56,7 @@ class PicList extends Component {
               recode.imgs.map((item,index) => {
                 let name = 'selUrl' + recode._id // this.state中该条客样照选中的url的变量名
                 let style = ''
-                if (item===this.state[name]) { // 该路径被选中
+                if (item === this.state[name]) { // 该路径被选中 通过className添加样式
                   style = Style.selUrl
                 } else if (!this.state[name] && index === 0) { // 第一次加载页面 默认选中第一条路径
                   style = Style.selUrl
@@ -78,10 +77,10 @@ class PicList extends Component {
       } },
       { title: '缩略图', key: 'img', width: 130, align: 'center', render: (recode) => {
         let name = 'selUrl' + recode._id // this.state中该条客样照选中的url的变量名
-        let url = this.state[name] // 该条客样照选中的url
+        let url = this.state[name] // 该条客样照选中的路径
         return (
-        <img src={
-          url?baseUrl + url:baseUrl + recode.imgs[0]
+        <img src={ // url存在图片路径设置为url 不存在显示第一张图片
+          url?baseUrl + url:baseUrl + recode.imgs[0] // 页面第一次加载时url为空 显示第一张图片
         } alt='not found' style={{width:'120px', maxHeight:'80px'}}/>
         )
       } },
@@ -136,12 +135,13 @@ class PicList extends Component {
       return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
     }
     // 关键词不为空 切换关键词查询
-    this.setState({spinning: true, showSizeChanger: false}) // 加载中动画显示
+    this.setState({spinning: true}) // 加载中动画显示
     this.setState({function: this.search}) // 分页点击处理方法设置为关键词查询
     let { code, msg , list, count } = await picApi.getByKw({kw}) // 搜索请求
     if(code){ return message.error(msg) } // 查询失败
     if (list.length === 0) {  message.warn('请输入其他关键词')} // 查询结果为空
-    this.setState({list, count, pageSize: count}) // 查询成功
+    list = this.pagination(list) // 分页处理
+    this.setState({list, count}) // 查询成功
     this.setState({spinning: false}) // 加载中动画隐藏
   }
   // 查询指定摄影师客样照
@@ -152,13 +152,26 @@ class PicList extends Component {
       return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
     }
     // 选中指定摄影师 切换至摄影师查询
-    this.setState({spinning: true, showSizeChanger: false}) // 加载中动画显示
+    this.setState({spinning: true}) // 加载中动画显示
     this.setState({function: this.getByPhoter}) // 分页点击处理方法设置为摄影师查询
     let { code, msg , list, count } = await picApi.getByPhpId(photer)
     if(code){ return message.error(msg) } // 查询失败
     if(list.length === 0){ message.warn('暂无该摄影师客样照') } // 返回列表为空
-    this.setState({list, count, pageSize: count}) // 查询成功
+    list = this.pagination(list) // 分页处理
+    this.setState({list, count}) // 查询成功
     this.setState({spinning: false}) // 加载中动画隐藏
+  }
+  // 分页
+  pagination (data) {
+    let arr = []
+    let { page, pageSize } = this.state
+    let skip = (page -1) * pageSize
+    let limit = page * pageSize
+    if (limit > data.length) {limit = data.length}
+    for (let i = skip; i < limit; i++) {
+      arr.push(data[i])
+    }
+    return arr
   }
   // 获取客样照列表
   getListData = async () => {
@@ -243,7 +256,7 @@ class PicList extends Component {
     this.setState({photers: data}) // 请求成功初始化摄影师列表
   }
   render() {
-    let { columns, list, spinning, page, pageSize, count, kw, photers, photer, showSizeChanger } = this.state
+    let { columns, list, spinning, page, pageSize, count, kw, photers, photer } = this.state
     return (
       <div className={Style.box}>
         <Card title='客样照' className={Style.card}>
@@ -288,7 +301,7 @@ class PicList extends Component {
           {/* 分页 */}
           <Pagination showQuickJumper current={page}
             total={count} pageSize={pageSize} style={{marginTop: '10px', textAlign: 'center'}}
-            showSizeChanger={showSizeChanger} pageSizeOptions={['2','4','10','20']} 
+            showSizeChanger={true} pageSizeOptions={['2','4','10','20']} 
             onChange={(page) => { // 页码变化更新页面
               this.setState({page},() => { this.state.function()})
             }}
