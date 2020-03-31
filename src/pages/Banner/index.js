@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import baseUrl from '@ultils/baseUrl'
 import bannerApi from '@api/bannerApi'
-import { Card, Table, Button, Modal, message, Popconfirm, Spin } from 'antd'
-import { PlusOutlined } from '@ant-design/icons';
+import Style from './index.module.less'
+import XLSX from 'xlsx'
+import { Card, Table, Button, Modal, message, Popconfirm, Spin, Pagination } from 'antd'
+import { PlusOutlined, DeleteOutlined, ExportOutlined } from '@ant-design/icons';
 class Banner extends Component {
   state = {
     visible: false, // 添加模态框显示隐藏
     spinning: false, // 加载中动画
+    count: 0, // 总条数
+    page: 1, // 当前页
+    pageSize: 2, //每页条数
     list: [], // 轮播图列表数据
     // 轮播列表表头
     columns: [
@@ -20,7 +25,7 @@ class Banner extends Component {
           <Popconfirm title="确认要删除吗？" onCancel={()=>{message.error('取消删除')}} onConfirm={
             this.bannerDel.bind(null,recode._id, recode.url)
           }>
-            <Button danger size='small'>删除</Button>
+            <Button danger size='small' icon={<DeleteOutlined />}>删除</Button>
           </Popconfirm>
         )
       }}
@@ -54,24 +59,75 @@ class Banner extends Component {
     let { code, list } = await bannerApi.get()
     if (code) { return false }
     list.reverse() // 翻转数组 最新添加的显示在前面
-    this.setState({list})
+    // 分页
+    let arr = []
+    let { page, pageSize } = this.state
+    let skip = (page -1) * pageSize
+    let limit = page * pageSize
+    if (limit > list.length) {limit = list.length}
+    for (let i = skip; i < limit; i++) {
+      arr.push(list[i])
+    }
+    let count = list.length // 总条数
+    this.setState({list: arr, count})
     this.setState({spinning: false}) // 关闭加载中动画
+  }
+  // 导出excel
+  export = async () => {
+    let { code, list } = await bannerApi.get()
+    if (code) { return message.error('导出失败') }
+    list.reverse()
+    // 表头
+    let thead = ['序号','id','图片路径']
+    // 内容
+    let table = list.map((item, index) => {
+      let arr = [ index+1 ]
+      arr.push(item._id)
+      arr.push(item.url)
+      return arr
+    })
+    table.unshift(thead)
+    console.log(table)
+    // 导出
+    let ws = XLSX.utils.aoa_to_sheet(table) // 数组转为标签页
+    let wb = XLSX.utils.book_new() // 创建工作薄
+    XLSX.utils.book_append_sheet(wb, ws) // 标签页写入工作薄
+    XLSX.writeFile(wb, '轮播图.xlsx') // 工作薄导出为excel文件
+    message.success('导出成功')
   }
   // 初始化轮播图列表
   componentDidMount = async () => {
     this.getList()
   }
   render() {
-    let { columns, list, visible, spinning } = this.state
+    let { columns, list, visible, spinning, page, pageSize, count } = this.state
     return (
       <div>
         <Card title='轮播图'>
-          <Button type='primary' icon={<PlusOutlined />} onClick={() => {
-            this.setState({visible: true})
-          }}>添加</Button>
+          <div className={Style.btnBox}>
+             <Button type='primary' icon={<PlusOutlined />} className={Style.btn} onClick={() => {
+              this.setState({visible: true})
+            }}>添加</Button>
+             <div className={Style.right}>
+              <Button type='primary' icon={<ExportOutlined />} className={Style.btn} onClick={this.export}>导出EXCEL</Button>
+              <div className={Style.count}><span>{`共${count}条`}</span></div>
+            </div>
+          </div>
+         
           <Spin spinning={spinning}>
-            <Table columns={columns} dataSource={list} rowKey='_id'></Table>
+            <Table columns={columns} dataSource={list} rowKey='_id'pagination={false}></Table>
           </Spin>
+          {/* 分页 */}
+          <Pagination showQuickJumper current={page}
+            total={count} pageSize={pageSize} style={{marginTop: '10px', textAlign: 'center'}}
+            showSizeChanger={true} pageSizeOptions={['2','4','10','20']} 
+            onChange={(page) => { // 页码变化更新页面
+              this.setState({page},() => { this.getList()})
+            }}
+            onShowSizeChange={(page, pageSize) => {
+              this.setState({page, pageSize}, ()=>{ this.getList() })
+            }}
+          />
         </Card>
         {/* 添加图片模态框 */}
         <Modal

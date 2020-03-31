@@ -1,24 +1,30 @@
 import axios from '../ultils/index.js'
-class Admin {
-  login(param){
-    let url='/mall/admin/login'
-    return axios.post(url,param)
-  }
-  userList(){
-    let url='/mall/admin'
-    return axios.get(url)
-  }
-  add({userName:name,passWord:pwd}){
-    let url='/mall/admin'
-    return axios.post(url,{userName:name,passWord:pwd})
-  }
-  del(_id){
-    let url=`/mall/admin/${_id}`;
-    return axios.delete(url)
-  }
-  // update(_id){
-  //   let url='/mall/'
-  // }
+import baseUrl from '../ultils/baseUrl'
+class api {
+    add(obj){
+        let url = baseUrl +'/user/add'
+        return axios.post(url,obj)
+    }
+    get(){
+        let url = baseUrl + '/user/get'
+        return axios.post(url)
+    }
+    del(_id){
+        let url = baseUrl + '/user/del'
+        return axios.post(url,{_id})
+    }
+    update(obj){
+        let url = baseUrl +'/user/updata'
+        return axios.post(url,obj)
+    }
+    getone(_id){
+        let url = baseUrl +'/user/getone'
+        return axios.post(url,_id)
+    }
+    addPic(param){
+        let url= baseUrl+'/upload'
+      // console.log('后端',param)
+        return axios.post(url,param)
+    }
 }
-
-export default new Admin()
+export default new api()

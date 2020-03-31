@@ -1,6 +1,5 @@
 import axios from '../ultils/index.js'
 import baseUrl from '../ultils/baseUrl'
-import update from '../pages/update/update.js'
 class api {
   login({obj}){
     let url = baseUrl + '/login/getone'
@@ -22,9 +21,9 @@ class api {
     let url = baseUrl + '/login/getup'
     return axios.post(url,{_id})
   }
-  update(_id,{obj}){
+  update(obj){
     let url = baseUrl +'/login/updata'
-    return axios.post(url,{_id},{obj})
+    return axios.post(url,obj)
   }
 }
 export default new api()

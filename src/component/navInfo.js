@@ -20,7 +20,7 @@ export default [
   {
     key:'picList',
     title:'客样照',
-    icon:'banner',
+    icon:'pic',
     path:'/admin/picList'
   },
   // {
@@ -48,11 +48,22 @@ export default [
     path:'/admin/php'
   },
   {
+    key:5,
+    title:'摄影师详情',
+    icon:'Ding',
+    path:'/admin/phpdetails'
+  },
+  {
     key:'user/',
     title:'用户',
     icon:'user',
     path:"/admin/user",
     children:[
+      {
+        key:'user-info',
+        title:"用户信息",
+        path:'/admin/user/info',
+      },
       {
       key:'user-how',
       title:'用户评价',
@@ -62,7 +73,12 @@ export default [
         key:'user-book',
         title:"用户预约页",
         path:'/admin/user/book',
-      }
+      },
+      {
+        key:'user-order',
+        title:"用户订单页",
+        path:'/admin/user/order',
+      },
     ]
   },
   {
