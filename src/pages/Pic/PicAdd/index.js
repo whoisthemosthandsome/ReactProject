@@ -25,6 +25,7 @@ class PicAdd extends Component {
   }
   // 上传客样照文本
   onFinish = async (value) =>{
+    if (!value.states) { value.states = '0' } // 默认发布状态为未发布
     if (this.state.phpType === '请选择') { return message.error('请选择摄影类型') }
     if (this.state.disabled === true) { return message.warn('上传中') }
     this.setState({disabled: true}) // 上一条数据未上传完成 禁止重复提交
@@ -92,7 +93,7 @@ class PicAdd extends Component {
             </Form.Item>
             <Form.Item name={'photer'} label="摄影师" rules={[{required: true}]}>
               <Select defaultValue={defaultValue} onChange={(value)=>{
-                this.getPhpTypeList(value)
+                this.getPhpTypeList(value) // 获取对应摄影师摄影类型
               }}>
                 {
                   photers.map((item, index) => {
@@ -117,6 +118,13 @@ class PicAdd extends Component {
                   })
                 }
                 
+              </Select>
+            </Form.Item>
+            <Form.Item name={'states'} label="发布状态">
+              <Select defaultValue='0'>
+               <Select.Option value='0'>未发布</Select.Option>
+               <Select.Option value='1'>已发布</Select.Option>
+               <Select.Option value='-1'>已下架</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item name={'desc'} label="描述" rules={[{required: true}]}>
