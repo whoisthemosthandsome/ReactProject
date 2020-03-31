@@ -1,5 +1,6 @@
 import React from 'react';
 import './reset.css'
+import LoadAble from './ultils/loadable'
 
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
 //后台系统主页
@@ -13,17 +14,17 @@ import Echart from './pages/echart/echart'
 import How from './pages/how/how'
 //管理员成员信息
 import AdminInfo from './pages/Administror/admin'
-// 轮播图
-import Banner from './pages/Banner'
-// 客样照列表
-import PicList from './pages/Pic/PicList'
-// 客样照添加
-import PicAdd from './pages/Pic/PicAdd'
-// 客样照修改
-import PicUpdate from './pages/Pic/PicUpdate'
 import UserInfo from './pages/userInfo'
 import Book from './pages/book'
 import Order from './pages/order'
+// 轮播图
+const Banner = LoadAble(() => import('./pages/Banner'))
+// 客样照列表
+const PicList = LoadAble(() => import('./pages/Pic/PicList'))
+// 客样照列表
+const PicAdd = LoadAble(() => import('./pages/Pic/PicAdd'))
+// 客样照修改
+const PicUpdate = LoadAble(() => import('./pages/Pic/PicUpdate'))
 
 function App() {
   return (

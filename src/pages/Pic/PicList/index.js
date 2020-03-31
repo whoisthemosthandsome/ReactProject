@@ -180,6 +180,7 @@ class PicList extends Component {
   export = async () => {
     let { code, list } = await picApi.get()
     if (code) { return message.error('导出失败') }
+    list.reverse()
     // 表头
     let thead = ['序号','摄影师','图片路径','id','标题','描述','浏览','点赞','更新时间','摄影类型','发布状态','图片总数']
     // 内容
@@ -286,9 +287,13 @@ class PicList extends Component {
           {/* 分页 */}
           <Pagination showQuickJumper current={page}
             total={count} pageSize={pageSize} style={{marginTop: '10px', textAlign: 'center'}}
-            onChange={(page) => { this.setState({page},() => { 
-              this.state.function()
-            }) }}
+            showSizeChanger={true} pageSizeOptions={['2','4','10','20']} 
+            onChange={(page) => { // 页码变化更新页面
+              this.setState({page},() => { this.state.function()})
+            }}
+            onShowSizeChange={(page, pageSize) => {
+              this.setState({page, pageSize}, ()=>{ this.state.function() })
+            }}
           />
         </Card>
       </div>
