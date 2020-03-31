@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin} from 'antd';
-import { UserAddOutlined,DeleteOutlined ,SnippetsOutlined} from '@ant-design/icons'
+import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin ,Select} from 'antd';
+import { UserAddOutlined,DeleteOutlined} from '@ant-design/icons'
 import s from './index.module.less'
 import api from '../../api/bookApi'
+// import { wait } from '@testing-library/react';
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -17,11 +18,13 @@ class admins extends Component {
     state={
         modal:false,//模态框默认是隐藏的
         dataSource:[],
-        userName:'',//usename
+        name:'',//usename
         phoName:'',//头像
         _id:'',
         date:'',
         loading:false,
+        php:[],
+        user:[],
         columns:[
         {
             title: 'id',
@@ -30,12 +33,20 @@ class admins extends Component {
         },
         {
             title: '姓名',
-            dataIndex: 'userName',
+            render:(record)=>{
+                return(
+                    record.name[0].userName
+                )
+            },
             key: 'name',
         },
         {
             title: '摄影师',
-            dataIndex: 'phoName',
+            render:(record)=>{
+                return(
+                    record.phoName[0].phpName
+                )
+            },
             key: 'phoName',
         },
         {
@@ -66,26 +77,34 @@ class admins extends Component {
     //-------------------------------------方法-------------------------------------
     //得到用户信息
     getInfo=async()=>{
-        this.setState({loading:true})
         let result= await api.get();
-        this.setState({dataSource:result.list,loading:true})
+        this.setState({loading:true})
+        // console.log(result)
+        this.setState({dataSource:result.list})
+        console.log(this.state.dataSource)
         this.setState({loading:false})
     }
     async componentDidMount(){
         await this.getInfo()
+        let result = await api.getphp()
+        this.setState({php:result.data})
+        let res = await api.getuser()
+        this.setState({user:res.list})
+        // let {_id,phpName} = result
+        console.log(result,this.state.php,res)
     }
     //添加用户操作
     onFinish = values => {
-        let userName=values.username;
+        let name=values.name;
         let date=values.date;
         let phoName=values.phoName;
-        this.setState({userName,date,phoName})
+        this.setState({name,date,phoName})
     };
     //添加用户操作函数
     add=async(e)=>{   
-        let {userName,date,phoName} = this.state
-        if(!{userName,date,phoName}){message.error('请先确定')}
-        let result=await api.add({userName,date,phoName})
+        let {name,date,phoName} = this.state
+        if(!{name,date,phoName}){message.error('请先确定')}
+        let result=await api.add({name,date,phoName})
         if(result.code!==0){
         message.error('用户添加失败')
         return false
@@ -126,19 +145,19 @@ class admins extends Component {
         });
     };
     render() {
-    let {dataSource,columns ,userName,date,phoName} = this.state
+    let {dataSource,columns ,php,user} = this.state
     return (
         <div className={s.card}>
             <Spin spinning={this.state.loading}>
                 <div className="site-card-border-less-wrapper" >
-                    <Card title="Card title" bordered={false} >
+                    <Card title="预约操作" bordered={false} >
                         < Button  type="primary" onClick={this.model} icon={<UserAddOutlined />}>添加</Button>
                         <Table scroll={{y:800}}  rowKey='_id' loading={this.loading} pagination={false} dataSource={dataSource} columns={columns} className={s.table}/>
                     </Card>
                 </div>
             {/* 添加 */}
             <Modal
-            title="添加订单"
+            title="添加预约"
             visible={this.state.modal}
             onOk={this.handleOk}
             onCancel={this.handleCancel}
@@ -151,11 +170,15 @@ class admins extends Component {
                 onFinishFailed={onFinishFailed}
                 >
                 <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input username!' }]}
+                    label="客户"
                 >
-                    <Input />
+                    <select name="name">
+                        {
+                            user.map((item,index) => {
+                                return(<option value={item._id} key={item._id}>{item.userName}</option>)
+                            })
+                        }
+                    </select>
                 </Form.Item>
                 <Form.Item
                     label="date"
@@ -164,11 +187,14 @@ class admins extends Component {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item
-                    label="phoName"
-                    name="phoName"
-                >
-                    <Input />
+                <Form.Item label="摄影师" >
+                    <select name="phoName">
+                        {
+                            php.map((item,index) => {
+                                return(<option value={item._id} key={item._id}>{item.phpName}</option>)
+                            })
+                        }
+                    </select>
                 </Form.Item>
                 <Form.Item {...tailLayout}>
                     <Button type="primary" htmlType="submit">

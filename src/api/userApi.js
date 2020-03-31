@@ -21,5 +21,10 @@ class api {
         let url = baseUrl +'/user/getone'
         return axios.post(url,_id)
     }
+    addPic(param){
+        let url= baseUrl+'/upload'
+      // console.log('后端',param)
+        return axios.post(url,param)
+    }
 }
 export default new api()
