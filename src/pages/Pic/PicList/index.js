@@ -181,7 +181,7 @@ class PicList extends Component {
     let { code, list } = await picApi.get()
     if (code) { return message.error('导出失败') }
     // 表头
-    let thead = [ '序号', '摄影师', '图片路径','id','标题','描述','浏览','点赞','更新时间','摄影类型','发布状态','图片总数' ]
+    let thead = ['序号','摄影师','图片路径','id','标题','描述','浏览','点赞','更新时间','摄影类型','发布状态','图片总数']
     // 内容
     let table = list.map((item, index) => {
       let arr = [ index+1 ]
