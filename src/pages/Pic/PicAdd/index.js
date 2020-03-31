@@ -92,7 +92,7 @@ class PicAdd extends Component {
             </Form.Item>
             <Form.Item name={'photer'} label="摄影师" rules={[{required: true}]}>
               <Select defaultValue={defaultValue} onChange={(value)=>{
-                this.getPhpTypeList(value)
+                this.getPhpTypeList(value) // 获取对应摄影师摄影类型
               }}>
                 {
                   photers.map((item, index) => {
@@ -117,6 +117,13 @@ class PicAdd extends Component {
                   })
                 }
                 
+              </Select>
+            </Form.Item>
+            <Form.Item name={'states'} label="发布状态" rules={[{required: true}]}>
+              <Select defaultValue='0'>
+               <Select.Option value='0'>未发布</Select.Option>
+               <Select.Option value='1'>已发布</Select.Option>
+               <Select.Option value='-1'>已下架</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item name={'desc'} label="描述" rules={[{required: true}]}>
