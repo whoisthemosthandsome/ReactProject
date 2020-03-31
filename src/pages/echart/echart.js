@@ -1,39 +1,78 @@
 import React, { Component } from 'react';
 import {Card} from 'antd'
 import ReactEcharts from 'echarts-for-react';
-//import api from '../../api/'
+import api from '../../api/howApi'
 class Echarts extends Component {
     state={
+        
+        yAxis:[],
+        xAis:[],
         option:{
+            legend: {
+                data: ['满意度']
+            },
+            tooltip: {
+                trigger: 'axis',
+                // axisPointer: {
+                //     type: 'shadow'
+                // }
+            },
             xAxis: {
                 type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                data: []
             },
             yAxis: {
                 type: 'value'
             },
             series: [{
+                name:'满意度',
                 data: [0, 0, 0, 0, 0, 0, 0],
                 // data: [120, 200, 150, 80, 70, 110, 130],
-                type: 'bar'
+                type: 'line'
             }]
         }
     }
   componentDidMount(){
-
-      setTimeout(()=>{
-        // 引用类型修改原数据 对比不引起dom的更新改变
-        let {option} = JSON.parse(JSON.stringify(this.state))
-        option.series[0].data =[120, 200, 150, 80, 70, 110, 130]
-        this.setState({option})
-      },1000)
+    let {list,xAis,yAxis} = this.state
+    api.Analyze()
+    .then((res)=>{
+       // this.setState({res.data:list})
+       console.log(res.data)
+       res.data.map((item,index)=>{
+          xAis.push(item.phpName)
+          yAxis.push(item.phpSatisfaction)
+       })
+        console.log(xAis)
+        this.setState({option:{
+            xAxis: {
+                type: 'category',
+                data: xAis,
+                
+            },
+            yAxis: {
+                type: 'value',
+               
+            },
+            series: [{
+                data: yAxis,
+                // data: [120, 200, 150, 80, 70, 110, 130],
+                type: 'bar',
+                itemStyle: {
+                    normal: {
+                       color:'lightgreen'
+                    }
+                },
+            }]
+        }})
+    })
+   
   }
   render() { 
       let {option} = this.state
     return ( 
       <div>
        <Card  title="折线图" >
-        <ReactEcharts option={option}></ReactEcharts>
+        <ReactEcharts option={option} style={{background:'light-blue'}}></ReactEcharts>
        </Card>
       </div>
      );

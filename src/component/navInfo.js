@@ -80,5 +80,11 @@ export default [
         path:'/admin/user/order',
       },
     ]
+  },
+  {
+    key:'look',
+    title:'数据统计',
+    icon:'sheet',
+    path:'/admin/look'
   }
 ]
