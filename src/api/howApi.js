@@ -20,6 +20,9 @@ class Admin {
    // console.log('后端20行param', param)
     return axios.post(url,param)
   }
+  getScore(param){
+    let url=baseURL+"/how/score"
+    return axios.post(url,param)
+  }
 }
-
 export default new Admin()
