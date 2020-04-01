@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, } from 'antd';
+import {Card,Table,Button,Popconfirm,Modal,Input,message,Form, Spin} from 'antd';
 import { UserAddOutlined,DeleteOutlined ,SnippetsOutlined} from '@ant-design/icons'
 import s from './index.module.less'
 import api from '../../api/loginApi'
@@ -10,22 +10,19 @@ const layout = {
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
-
-
 const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
 };
 class admins extends Component {
   state={
-    loading:false,//页面加载状态自动为未加载成功
     modal:false,//模态框默认是隐藏的
     modal1:false,//模态框默认是隐藏的
-    spinning:false,//页面加载状态自动为未加载成功
     dataSource:[],
     userName:'',//usename
     passWord:'',//userPassword
     leavel:'',
     _id:'',
+    loading:false,
     columns:[
       {
         title: 'id',
@@ -63,51 +60,41 @@ class admins extends Component {
       },
     ]
   }
-  
   //-------------------------------------方法-------------------------------------
   //得到管理员信息
   getInfo=async()=>{
+    this.setState({loading:true})
     let result= await api.get();
     this.setState({dataSource:result.list,loading:true})
-    // console.log(1)
+    this.setState({loading:false})
   }
   async componentDidMount(){
     await this.getInfo()
-    // console.log( '数据请求到了')
   }
   //添加管理员
   onFinish = values => {
-    // console.log(values);
     let userName=values.username;
     let passWord=values.password;
     let leavel=values.leavel;
-    // let {userName,passWord,leavel} = this.state
-    // console.log({userName,passWord,leavel})
     this.setState({userName,passWord,leavel})
   };
+  //修改管理员
   onFinish1 = values => {
     console.log(values);
-    // let userName=values.username;
     let passWord=values.password;
     let leavel=values.leavel;
-    let {userName} = this.state
-    console.log(userName)
-    // console.log({userName,passWord,leavel})
     this.setState({passWord,leavel})
   };
   add=async(e)=>{   
     let {userName,passWord,leavel} = this.state
     if(!{userName,passWord,leavel}){message.error('请先确定')}
-    // console.log(name,pwd)
     let result=await api.add({userName,passWord,leavel})
-    // console.log(result)
     if(result.code!==0){
       message.error('用户添加失败')
       return false
     }
     message.success("添加成员成功")
-    await this.getInfo()
-
+    this.getInfo()
   }
   //  删除
   del=async(_id)=>{
@@ -140,16 +127,17 @@ class admins extends Component {
   update=async ()=>{
     let {userName,passWord,leavel,_id} = this.state
     console.log(_id)
+    console.log({userName,passWord,leavel,_id})
     if(!{userName,passWord,leavel,_id}){message.error('请先确定')}
-    // console.log(name,pwd)
-    let result=await api.update(_id,{userName,passWord,leavel})
-    // console.log(result)
+    let result=await api.update({_id,userName,passWord,leavel})
+    //传参数写一个 后端结构
+    console.log(result)
     if(result.code!==0){
       message.error('用户修改失败')
       return false
     }
     message.success("修改成员成功")
-    await this.getInfo()
+    this.getInfo()
   }
   handleOk = e => {
     this.add()
@@ -180,8 +168,9 @@ class admins extends Component {
     console.log(userName,passWord,leavel)
     return (
       <div className={s.card}>
+        <Spin spinning={this.state.loading}>
          <div className="site-card-border-less-wrapper" >
-            <Card title="Card title" bordered={false} >
+            <Card title="管理操作" bordered={false} >
             < Button  type="primary" onClick={this.model} icon={<UserAddOutlined />}>添加</Button>
               {/* <Spin spinning={this.spinning}> */}
              <Table scroll={{y:300}}  rowKey='_id' loading={this.loading} pagination={false} dataSource={dataSource} columns={columns} className={s.table}/>
@@ -266,7 +255,7 @@ class admins extends Component {
         label="leavel"
         name="leavel"
       >
-        <select value='admin' onChange={(e)=>{
+        <select key='admin' onChange={(e)=>{
             this.value=e.target.value
         }}>
           <option value="admin">admin</option>
@@ -280,6 +269,7 @@ class admins extends Component {
       </Form.Item> 
     </Form>
           </Modal>
+          </Spin>
       </div>
      
     );
