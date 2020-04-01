@@ -12,7 +12,7 @@ class PicList extends Component {
     count: 0, // 总条数
     spinning: false, // 记载中动画显示隐藏
     kw: '', // 关键词
-    function: '', // 分页点击执行方法
+    fun: '', // 分页点击执行方法
     photers: [], // 摄影师列表
     photer: '全部', // 选中的摄影师
     list: [], // 客样照列表
@@ -95,7 +95,12 @@ class PicList extends Component {
             </Popconfirm>
             {/* 修改 */}
             <Button type='default' icon={<EditOutlined />} size='small' style={{margin: '5px 0'}}
-              onClick={()=>{this.props.history.push(`/admin/picUpdate/${recode._id}`)}}
+              onClick={()=>{
+                let { page, pageSize, fun, photer, kw } = this.state
+                let infos = { page, pageSize, fun, photer, kw }
+                localStorage.setItem('infos', JSON.stringify(infos))
+                this.props.history.push(`/admin/picUpdate/${recode._id}`)
+              }}
             >修改</Button>
             {/* 发布状态 */}
             <Select defaultValue={recode.states} style={{ width:'90px' }}
@@ -115,7 +120,7 @@ class PicList extends Component {
     let { code } = await picApi.del({_id, imgs}) // 删除请求
     if(code){ return message.error('删除失败') } // 删除失败
     message.success('删除成功')
-    this.getListData() // 删除成功刷新页面
+    this.getFun() // 删除成功刷新页面
   }
   // 修改发布状态
   changeState = async (value, data) => {
@@ -124,7 +129,7 @@ class PicList extends Component {
     let { code } = await picApi.update(data)
     if (code) { return message.error('修改发布状态失败')} // 修改失败
     message.success('修改发布状态成功')
-    this.getListData() // 修改发布状态成功刷新页面
+    this.getFun() // 修改发布状态成功刷新页面
   }
   // 搜索
   search = async () => {
@@ -132,44 +137,44 @@ class PicList extends Component {
     this.setState({photer: '全部'})
     // 关键词为空 切换到分页查询
     if (!kw) {
-      return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
+      return this.setState({fun: 'getListData', pageSize: 2}, ()=>{ this.getListData() })
     }
     // 关键词不为空 切换关键词查询
     this.setState({spinning: true}) // 加载中动画显示
-    this.setState({function: this.search}) // 分页点击处理方法设置为关键词查询
+    this.setState({fun: 'search'}) // 分页点击处理方法设置为关键词查询
     let { code, msg , list, count } = await picApi.getByKw({kw}) // 搜索请求
     if(code){ return message.error(msg) } // 查询失败
-    if (list.length === 0 && !this.state.searchReurison) {  message.warn('请输入其他关键词')} // 查询结果为空
-    list = this.pagination(list) // 分页处理
+    if (list.length === 0) {  message.warn('请输入其他关键词')} // 查询结果为空
+    let data = this.pagination(list) // 分页处理
     let {page} = this.state
-    if(list.length === 0 && page >1) { // 该分页内容为空
+    while(data.length === 0 && page >1){ // 该分页为空 显示前一页
       page--
-      this.setState({page, searchReurison:true})
-      return this.search()
+      this.setState({page})
+      data = this.pagination(list)
     }
-    this.setState({list, count, searchReurison: false, spinning: false}) // 查询成功 加载中动画隐藏
+    this.setState({list:data, count, spinning: false}) // 查询成功 加载中动画隐藏
   }
   // 查询指定摄影师客样照
   getByPhoter = async () => {
     let { photer } = this.state
     // 选中全部摄影师 切换至分页查询
     if (photer === '全部') {
-      return this.setState({function: this.getListData, pageSize: 2}, ()=>{ this.getListData() })
+      return this.setState({fun: 'getListData', pageSize: 2}, ()=>{ this.getListData() })
     }
     // 选中指定摄影师 切换至摄影师查询
     this.setState({spinning: true}) // 加载中动画显示
-    this.setState({function: this.getByPhoter}) // 分页点击处理方法设置为摄影师查询
+    this.setState({fun: 'getByPhoter'}) // 分页点击处理方法设置为摄影师查询
     let { code, msg , list, count } = await picApi.getByPhpId(photer)
     if(code){ return message.error(msg) } // 查询失败
-    if(list.length === 0 && !this.state.phpReurison){ message.warn('暂无该摄影师客样照') } // 返回列表为空
-    list = this.pagination(list) // 分页处理
+    if(list.length === 0){ message.warn('暂无该摄影师客样照') } // 返回列表为空
+    let data = this.pagination(list) // 分页处理
     let {page} = this.state
-    if(list.length === 0 && page >1) { // 该分页内容为空
+    while(data.length === 0 && page >1){ // 该分页为空 显示前一页
       page--
-      this.setState({page,phpReurison:true})
-      return this.getByPhoter()
+      this.setState({page})
+      data = this.pagination(list)
     }
-    this.setState({list, count, phpReurison: false, spinning: false}) // 查询成功 加载中动画隐藏
+    this.setState({list: data, count,  spinning: false}) // 查询成功 加载中动画隐藏
   }
   // 分页
   pagination (data) {
@@ -200,6 +205,22 @@ class PicList extends Component {
       }
     }
     this.setState({list, count, spinning: false}) // 查询成功 加载中动画隐藏
+  }
+  getFun () {
+    let fun =this.state.fun
+    switch (fun) {
+      case 'getListData':
+        this.getListData()
+        break;
+      case 'getByPhoter':
+        this.getByPhoter()
+        break
+      case 'search':
+        this.search()
+        break
+      default:
+        break;
+    }
   }
   // 导出excel
   export = async () => {
@@ -259,12 +280,22 @@ class PicList extends Component {
   }
   // 初始化
   componentDidMount = async () => {
-    this.getListData() // 初始化客样照列表
-    this.setState({function: this.getListData}) // 分页点击处理方法设置为分页查询
+    // 初始化摄影师列表
     let { code, data } = await picApi.getphp() // 摄影师列表请求
     if (code) {return false} // 请求失败
     data.unshift({_id: '全部', phpName: '全部'}) // 添加全部摄影师选项
     this.setState({photers: data}) // 请求成功初始化摄影师列表
+    // 获取跳转页面前信息 分页 查询方式
+    let infos = localStorage.getItem('infos')
+    if(infos){
+      infos = JSON.parse(infos)
+      let { page,pageSize,fun,photer,kw } = infos
+      this.setState({page,pageSize,fun,photer,kw})
+      return this.getFun()
+    }
+    // 页面第一次加载
+    this.getListData() // 初始化客样照列表
+    this.setState({fun: 'getListData'}) // 分页点击处理方法设置为分页查询
   }
   render() {
     let { columns, list, spinning, page, pageSize, count, kw, photers, photer } = this.state
@@ -314,10 +345,12 @@ class PicList extends Component {
             total={count} pageSize={pageSize} style={{marginTop: '10px', textAlign: 'center'}}
             showSizeChanger={true} pageSizeOptions={['2','4','10','20']} 
             onChange={(page) => { // 页码变化更新页面
-              this.setState({page},() => { this.state.function()})
+              this.setState({page},() => {
+                this.getFun()
+              })
             }}
             onShowSizeChange={(page, pageSize) => {
-              this.setState({page, pageSize}, ()=>{ this.state.function() })
+              this.setState({page, pageSize}, ()=>{ this.getFun() })
             }}
           />
         </Card>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component }from 'react';
 import './reset.css'
 import LoadAble from './ultils/loadable'
 import {HashRouter,Route,Redirect,Switch} from 'react-router-dom'
@@ -27,40 +27,78 @@ const PicUpdate = LoadAble(() => import('./pages/Pic/PicUpdate'))
 //数据统计列表
 const Look = LoadAble(() => import('./pages/echart/echart'))
 const TokenModel = LoadAble(() => import('./component/TokenModel'))
-
-function App() {
-  return (
-    <div>
-      <HashRouter>
-        {/* <Switch> */}
-          {/* <Redirect exact from='/' to='/login' ></Redirect>   */}
-        <Switch>
-          <Redirect exact from='/' to='/login' ></Redirect>  
-          <Route path='/login' component={Login}/>
-          <Route path='/reg' component={Reg}/>
-          <Route path='/update' component={Update}/>
-          {/* <Route path='/admin' component={Admin}/> */}
-          <Route  path='/admin' render={()=>{
-            return(
-              <Admin>
-                <Route path='/admin/admin' component={AdminInfo}></Route>
-                <Route path='/admin/user/how' component={How}/>
-                <Route path='/admin/banner' component={Banner}></Route>
-                <Route path='/admin/picList' component={PicList}></Route>
-                <Route path='/admin/picAdd' component={PicAdd}></Route>
-                <Route path='/admin/user/book' component={Book}></Route>
-                <Route path='/admin/user/info' component={UserInfo}></Route>
-                <Route path='/admin/user/order' component={Order}></Route>
-                <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
-                <Route path='/admin/look' component={Look}></Route> 
-              </Admin>
-            )
-          }}/>
-        </Switch>
-        <TokenModel></TokenModel>
-      </HashRouter>  
-      </div>
-  );
-} 
+class App extends Component{
+  componentDidMount(){
+    localStorage.setItem('infos', '')
+  }
+  render(){
+    return (
+      <div>
+        <HashRouter>
+          {/* <Switch> */}
+            {/* <Redirect exact from='/' to='/login' ></Redirect>   */}
+          <Switch>
+            <Redirect exact from='/' to='/login' ></Redirect>  
+            <Route path='/login' component={Login}/>
+            <Route path='/reg' component={Reg}/>
+            <Route path='/update' component={Update}/>
+            {/* <Route path='/admin' component={Admin}/> */}
+            <Route  path='/admin' render={()=>{
+              return(
+                <Admin>
+                  <Route path='/admin/admin' component={AdminInfo}></Route>
+                  <Route path='/admin/user/how' component={How}/>
+                  <Route path='/admin/banner' component={Banner}></Route>
+                  <Route path='/admin/picList' component={PicList}></Route>
+                  <Route path='/admin/picAdd' component={PicAdd}></Route>
+                  <Route path='/admin/user/book' component={Book}></Route>
+                  <Route path='/admin/user/info' component={UserInfo}></Route>
+                  <Route path='/admin/user/order' component={Order}></Route>
+                  <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
+                  <Route path='/admin/look' component={Look}></Route> 
+                </Admin>
+              )
+            }}/>
+          </Switch>
+          <TokenModel></TokenModel>
+        </HashRouter>  
+        </div>
+    );
+  }
+}
+// function App() {
+//   return (
+//     <div>
+//       <HashRouter>
+//         {/* <Switch> */}
+//           {/* <Redirect exact from='/' to='/login' ></Redirect>   */}
+//         <Switch>
+//           <Redirect exact from='/' to='/login' ></Redirect>  
+//           <Route path='/login' component={Login}/>
+//           <Route path='/reg' component={Reg}/>
+//           <Route path='/update' component={Update}/>
+//           {/* <Route path='/admin' component={Admin}/> */}
+//           <Route  path='/admin' render={()=>{
+//             return(
+//               <Admin>
+//                 <Route path='/admin/admin' component={AdminInfo}></Route>
+//                 <Route path='/admin/user/how' component={How}/>
+//                 <Route path='/admin/banner' component={Banner}></Route>
+//                 <Route path='/admin/picList' component={PicList}></Route>
+//                 <Route path='/admin/picAdd' component={PicAdd}></Route>
+//                 <Route path='/admin/user/book' component={Book}></Route>
+//                 <Route path='/admin/user/info' component={UserInfo}></Route>
+//                 <Route path='/admin/user/order' component={Order}></Route>
+//                 <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
+//                 <Route path='/admin/look' component={Look}></Route> 
+//               </Admin>
+//             )
+//           }}/>
+//         </Switch>
+//         <TokenModel></TokenModel>
+//       </HashRouter>  
+//       </div>
+//   );
+// } 
 
 export default App;
