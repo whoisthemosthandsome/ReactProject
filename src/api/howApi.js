@@ -26,7 +26,12 @@ class Admin {
   }
   byKw(kw,page,pageSize){
     let url=baseURL+'/how/byKw'
-    return axios.post(url,{kw,page,pageSize})
+   return axios.post(url,{kw,page,pageSize})
+  //  return axios.post(url,{
+  //    params:{
+  //     kw,page,pageSize
+  //   }
+  //   })
   }
   getStaff(){
     let url = baseURL + '/phpdetails/getphp'
