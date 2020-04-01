@@ -8,7 +8,9 @@ class login extends Component {
   onFinish =async(values) => {
     // console.log('Received values of form: ', values); 
     let {userName,passWord} = values
-    api.login({userName,passWord}).then(()=>{
+    api.login({userName,passWord}).then((res)=>{
+      let token = res.token
+      localStorage.setItem('token', token)
       message.success('登录成功，3s后跳转首页',3,()=>{
         this.props.history.replace('/admin')
       })
