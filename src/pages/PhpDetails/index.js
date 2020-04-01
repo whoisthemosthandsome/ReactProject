@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PhpDetailsApi from '../../api/phpDetailsApi'
 import { Table,Spin,Button,Popconfirm,notification, Modal,Pagination} from 'antd';
+import howApi from '../../api/howApi';
+import phpDetailsApi from '../../api/phpDetailsApi';
 class PhpDetails extends Component {
     state = { 
         phpList:[],
@@ -32,84 +34,84 @@ class PhpDetails extends Component {
               dataIndex: '_id',
               key: '_id',
               ellipsis:'true',
-              render: text => <a>{text}</a>,
+              render: text => <span>{text}</span>,
             },
             {
                 title: '摄影师',
                 dataIndex: 'phpName',
                 key: 'phpName',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '职务',
                 dataIndex: 'phpPosition',
                 key: 'phpPosition',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '选择人数',
                 dataIndex: 'phpSelect',
                 key: 'phpSlect',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '关注数',
                 dataIndex: 'phpAtt',
                 key: 'phpAtt',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '常驻',
                 dataIndex: 'phpRsident',
                 key: 'phpRsident',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '满意度',
                 dataIndex: 'phpSatisfaction',
                 key: 'phpSatisfaction',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '擅长',
                 dataIndex: 'phpTitle',
                 key: 'phpTitle',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '简介',
                 dataIndex: 'phpSelf',
                 key: 'phpSelf',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '样式照片',
                 dataIndex: 'phpRecom',
                 key: 'pphpRecom',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '广告图',
                 dataIndex: 'venueImg',
                 key: 'venueImg',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '档期',
                 dataIndex: 'phpAuction',
                 key: 'phpAuction',
                 ellipsis:'true',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '缩略图',
@@ -125,7 +127,7 @@ class PhpDetails extends Component {
                 title: '摄影师ID',
                 dataIndex: 'phpID',
                 key: 'phpID',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '操作',
@@ -181,13 +183,28 @@ class PhpDetails extends Component {
             console.log(err)
         })
         let {page,pageSize}  = this.state
+        phpDetailsApi.getPhpDetails().then((data)=>{
+          for(var i=0;i<data.data.length;i++) {
+            let index=i
+            let name=data.data[i].phpName
+            let score=data.data[i].phpSatisfaction
+              howApi.getScore({phpName:name}).then((data1)=>{
+                if(data1.score==null) {
+                  score="暂无"
+                }else {
+                  score=data1.score.toFixed(1)
+                }
+              phpDetailsApi.phpUpdateOneDetails(data.data[index]._id,{phpSatisfaction:score}).then((res)=>{}) 
+            })
+          }
+        })
         PhpDetailsApi.phpFindByPageDetails(page,pageSize).then((data)=>{
           this.setState({phpList:data.result,spinning:false})
         })
      }
     render() { 
       let {phpName,phpPosition,phpSelect,phpID,imgPath,phpAtt,phpRsident,phpSatisfaction,
-        phpTitle,phpSelf,phpRecom,venueImg,phpAuction,page,pageSize,totle,reimg1,reimg2,reimg3,reimg4
+        phpTitle,phpSelf,venueImg,phpAuction,page,pageSize,totle
     }=this.state
         return ( 
           <div>
@@ -254,7 +271,6 @@ class PhpDetails extends Component {
               let file=new FormData()
               file.append("xixi",this.refs.img1.files[0])
               PhpDetailsApi.phpDetailsFile(file).then((data)=>{
-                console.log(data)
                 let path=data.path
                 this.setState({reimg1:path})
               }).catch((err)=>{

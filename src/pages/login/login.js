@@ -8,13 +8,13 @@ class login extends Component {
   onFinish =async(values) => {
     // console.log('Received values of form: ', values); 
     let {userName,passWord} = values
-    api.login({userName,passWord}).then(()=>{
+    api.login({userName,passWord}).then((res)=>{
+      localStorage.setItem('token',res.token)
       message.success('登录成功，3s后跳转首页',3,()=>{
         this.props.history.replace('/admin')
       })
     })
     .catch((err)=>{
-      console.log('err',err)
       message.error('输入有误请重试')
     })
       //可以用这个写法实现路由跳转

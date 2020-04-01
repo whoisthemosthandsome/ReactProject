@@ -26,7 +26,7 @@ class PhpDetailsUpdate extends Component {
         let id=this.props.match.params.id
         this.setState({_id:id})
         phpDetailsApi.phpFindOneDetails(id).then((data)=>{
-            let {phpName,phpPosition,phpSelect,phpID,imgPath,phpAtt,phpRsident,phpSatisfaction,
+            let {phpName,phpPosition,phpSelect,phpID,phpAtt,phpRsident,phpSatisfaction,
                 phpTitle,phpSelf,phpRecom,venueImg,phpAuction
             }=data.data
             this.setState({phpName,phpPosition,phpID,phpSelect,phpAtt,phpRsident,phpSatisfaction,phpTitle,phpSelf,phpRecom,venueImg,phpAuction,
@@ -73,7 +73,6 @@ class PhpDetailsUpdate extends Component {
                 let file=new FormData()
                 file.append("xixi",this.refs.img1.files[0])
                 phpDetailsApi.phpDetailsFile(file).then((data)=>{
-                  console.log(data)
                   let path=data.path
                   this.setState({reimg1:path})
                 }).catch((err)=>{
@@ -82,7 +81,6 @@ class PhpDetailsUpdate extends Component {
             }}>上传</Button>
             <img src={this.state.reimg1} alt="" style={{width:50,height:50}}/><br/>
               摄影师样品图2： <input type="file" ref="img2"/> <Button onClick={()=>{
-                console.log(2)
                 let file=new FormData()
                 file.append("xixi",this.refs.img2.files[0])
                 phpDetailsApi.phpDetailsFile(file).then((data)=>{
@@ -119,7 +117,6 @@ class PhpDetailsUpdate extends Component {
               let file=new FormData()
               file.append("xixi",this.refs.img5.files[0])
               phpDetailsApi.phpDetailsFile(file).then((data)=>{
-                console.log(data)
                 let path=data.path
                 this.setState({reimg5:path})
               }).catch((err)=>{
@@ -139,7 +136,6 @@ class PhpDetailsUpdate extends Component {
               }}>上传</Button>
               <img src={this.state.imgPath} alt="" style={{width:50,height:50}}/>
               <Button type='primary' onClick={()=>{
-                  console.log(this.state)
                   phpRecom=reimg1+'/'+reimg2+'/'+reimg3+'/'+reimg4
                   this.setState({phpRecom})
                   let updateList={phpName,phpPosition,phpSelect,phpID,imgPath,phpAtt,phpRsident,phpSatisfaction,

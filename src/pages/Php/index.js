@@ -13,32 +13,32 @@ class Php extends Component {
         phpID:'',
         imgPath:'',
         totle:'',
-        page:'1',
-        pageSize:"2",
+        page:1,
+        pageSize:2,
         columns:[
             {
               title: '_id',
               dataIndex: '_id',
               key: '_id',
-              render: text => <a>{text}</a>,
+              render: text => <span>{text}</span>,
             },
             {
                 title: '摄影师',
                 dataIndex: 'phpName',
                 key: 'phpName',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '职务',
                 dataIndex: 'phpPosition',
                 key: 'phpPosition',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '选择人数',
                 dataIndex: 'phpSelect',
                 key: 'phpSlect',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '缩略图',
@@ -54,7 +54,7 @@ class Php extends Component {
                 title: '摄影师ID',
                 dataIndex: 'phpID',
                 key: 'phpID',
-                render: text => <a>{text}</a>,
+                render: text => <span>{text}</span>,
               },
               {
                 title: '操作',
