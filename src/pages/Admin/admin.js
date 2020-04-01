@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Layout,  } from 'antd';
+import { Layout, Button } from 'antd';
 import Php from '../Php'
+import TokenModel from '../../component/TokenModel/index'
 // import {
 //   AppstoreOutlined,
 //   BarChartOutlined,
@@ -21,14 +22,21 @@ const { Header, Content, Footer,Sider } = Layout;
 export default class Admin extends Component {
   render() {
     return(
-    <Layout className={s.outer}>
+      <Layout className={s.outer}>
+      <TokenModel></TokenModel>
     <Sider  style={{background:'yellow'}}>
       <div style={{height:64,width:200,background:'pink',textAlign:'center'}} className="logo" >logo </div>
        <Nav></Nav>
     </Sider>
     
     <Layout >
-      <Header style={{background:'red'}} >这里是头部</Header>
+      <Header style={{background:'red'}} >这里是头部 <Button onClick={()=>{
+        console.log(this)
+        // this.props.history.replace('/login')
+      // let location=(window.location.href).split('/login')[0]
+      window.location.href='/login'
+        localStorage.setItem('token','')
+      }}>退出登录</Button></Header>
       <Content >
         <div  >
         <HashRouter>

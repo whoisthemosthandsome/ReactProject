@@ -65,6 +65,7 @@ class admins extends Component {
   getInfo=async()=>{
     this.setState({loading:true})
     let result= await api.get();
+    console.log(result)
     this.setState({dataSource:result.list,loading:true})
     this.setState({loading:false})
   }
@@ -165,7 +166,7 @@ class admins extends Component {
   };
   render() {
     let {dataSource,columns ,userName,passWord,leavel} = this.state
-    console.log(userName,passWord,leavel)
+    // console.log(userName,passWord,leavel)
     return (
       <div className={s.card}>
         <Spin spinning={this.state.loading}>
