@@ -4,7 +4,6 @@ import ReactEcharts from 'echarts-for-react';
 import api from '../../api/howApi'
 class Echarts extends Component {
     state={
-        
         yAxis:[],
         xAis:[],
         option:{
@@ -33,29 +32,26 @@ class Echarts extends Component {
         }
     }
   componentDidMount(){
-    let {list,xAis,yAxis} = this.state
+    let {xAis,yAxis} = this.state
     api.Analyze()
     .then((res)=>{
        // this.setState({res.data:list})
-       console.log(res.data)
-       res.data.map((item,index)=>{
+      // console.log(res.data)
+       res.data.foreach((item,index)=>{
           xAis.push(item.phpName)
           yAxis.push(item.phpSatisfaction)
        })
-        console.log(xAis)
+       // console.log(xAis)
         this.setState({option:{
             xAxis: {
                 type: 'category',
                 data: xAis,
-                
             },
             yAxis: {
                 type: 'value',
-               
             },
             series: [{
                 data: yAxis,
-                // data: [120, 200, 150, 80, 70, 110, 130],
                 type: 'bar',
                 itemStyle: {
                     normal: {

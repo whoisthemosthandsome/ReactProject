@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-expressions */
 import React, { Component} from 'react';
-import {Card,Table,Pagination, message ,Select} from 'antd'
+import {Card,Table,Pagination, message ,Select,Button} from 'antd'
+import {DownloadOutlined } from '@ant-design/icons';
 import s from './how.module.less'
 import api from '../../api/howApi'
 import baseUrl from '../../ultils/baseUrl'
+import XLSX from 'xlsx'
 const { Option } = Select;
 //点击页码数，触发函数。函数判断当前的situation是不是true 
 //不是search 就只写bypage  situation改为false
@@ -14,24 +16,20 @@ const { Option } = Select;
 class how extends Component {
   //-----------------------------------state值----------------------------------------
   state={
-    list:[],//渲染的列表列表
+    list:[],//渲染的列表
     imgPaths:[],//图片路径集合
-    url:'',//路径
-    img:'not found',//仅缩略图用的路径
+    url:'',//图片路径，图片的dataIndex
     show:false,//控制图片显示隐藏的变量
     staffs:[],//所有摄影师名字
-    kw:'',//关键字
+    kw:'全部',//关键字
     allPage:1,//总页数
     pageSize:3,//每页显示条数
     page:1,// 当前页,
-    spinning:false,//
+    //img:'not found',//仅缩略图用的路径,当前页面用不到
     //--------------这一段改编自官网，主要渲染表头----------------
     columns : [
       {
-        title:'评论时间',
-        dataIndex:'createTime',
-        key:'createTime',
-        width:100,
+        title:'评论时间',dataIndex:'createTime',key:'createTime',width:100,
         render(createTime) {
           // 将发布时间毫秒转为日期
           let time = new Date(Number(createTime))
@@ -42,33 +40,14 @@ class how extends Component {
           return(<span>{show}</span>)
         } 
       },
+      {title: '序号',dataIndex: '_id',key: '_id',align: 'center',width:100,},
+      {title: '用户名',dataIndex: 'userName',key: 'userName',align: 'center',width:100,},
+      {title: '评价摄影师',dataIndex: 'staffName',key: 'staffName',width:150,align: 'center'},
+      {title: '评分',dataIndex: 'star',key: 'star',align: 'center',width:100,},
       {
-        title: '用户名',
-        dataIndex: 'userName',
-        key: 'userName',
-        align: 'center',
-        width:100,//设置该行宽度
-      },
-      {
-        title: '评价摄影师',
-        dataIndex: 'staffName',
-        key: 'staffName',
-        width:150,
-        align: 'center',
-      },
-      {
-        title: '评分',
-        dataIndex: 'star',
-        key: 'star',
-        align: 'center',
-        width:100,
-      },
-      {
-        title:'图片',
+        title:'图片', align: 'center',key:'url',
         width:200,
-        align: 'center',
         dataIndex:'url',
-        key:'url',
         render:(_record)=>{
           return(
             <div>
@@ -84,10 +63,7 @@ class how extends Component {
         }
       },
       {
-        title:'缩略图',
-        dataIndex:'url',
-        width:100,
-        key:'pic',
+        title:'缩略图',dataIndex:'url',width:100,key:'pic',
         align: 'center',
         render:(record)=>{
           return(
@@ -103,14 +79,7 @@ class how extends Component {
           )
         }
       },
-      {
-        title: '评论内容',
-        dataIndex: 'content',
-        key: 'content',
-        ellipsis: true,
-        width:200,
-        align: 'center',
-      },
+      {title: '评论内容', dataIndex: 'content', key: 'content', ellipsis: true,width:200,align: 'center'},
       // {
       //   //！仅做测试用 当前页面用不到
       //   title:'操作',
@@ -142,48 +111,40 @@ class how extends Component {
       // }
     ],
     dataSource:[
-      {
-        userName:'bob',
-        star:5,
-        staffName:'邓一',
-        content:'红红火火恍恍惚惚哈哈哈呱呱呱呱呱呱呱呱呱哈哈哈哈哈红红火火恍恍惚惚',
-        _id:'something',
-        url:'lujing',
-        createTime:'',
-      }
+      {userName:'bob', star:5,staffName:'邓一',content:'红红火哈惚', _id:'something',url:'lujing',createTime:'',}
     ],
   }
   //--------------------------------------生命周期以及方法/数据请求------------------------
   componentDidMount(){
     this.init()//得到所有摄影师名字
-    this.Bypage() //初始化
+    this.Bypage() //第一次加载所有评论信息
+
   } 
-  judgeSituation(kw){//通过判断当前kw的值来判断应该执行的方法
+  judgeSituation(kw,page){//通过判断当前kw的值来判断应该执行的方法
     if(kw==='全部'){
      this.Bypage()
     }else{//有关键字
-     this.search(kw)
+     this.search(kw,page)
     }
   }
-
-  search=(kw)=>{//通过关键字搜索生成列表
-    let {page,pageSize} = this.state
+  search=(kw,page)=>{//通过关键字搜索生成列表及分页器
+    let {pageSize} = this.state
     api.byKw(kw,page,pageSize)
     .then((data)=>{
+      console.log(kw,111,data)
       this.setState({
         list:data.list,
         allPage:data.allCount,
         page,pageSize,
       })
   })
-
   }
   init(){//初始化得到所有摄影师名字
     let {staffs} = this.state
     api.getStaff()
     .then((data)=>{
-      staffs.push('全部')
-      data.data.map((item,index)=>{
+      staffs.push('全部')//保证第一个放的永远是全部
+      data.data.forEach((item,index)=>{
         if(staffs.indexOf(item.phpName)===-1){
           staffs.push(item.phpName)
         }
@@ -197,7 +158,7 @@ class how extends Component {
     this.setState({show:!this.state.show})
     this.setState({img:img.item})
   }
-  //下拉框选中搜索得到相应摄影师的数据
+  //下拉框选中得到其选中值，修改关键字，触发判断函数
   Change=(value)=> {
     let {kw} = this.state
     kw = value //点击的内容是kw
@@ -219,7 +180,7 @@ class how extends Component {
     }
     let {code,msg,imgs} = await api.addPic(formdata)
     if(code){ return message.error(msg)}
-    imgs.map((item,index)=>{
+    imgs.forEach((item,index)=>{
       imgPaths.push(item)
       this.setState({imgPaths})
     })
@@ -234,28 +195,70 @@ class how extends Component {
     .then(()=>{
       this.getListDate()
     })
-   
   }
-  //------------------------查看所有评论接口----------------------------
-  getListDate =async()=>{
-    let { staffs}= this.state
-    api.userList()
-    .then((res)=>{
-      if(res.code===0){
-         this.setState({list:res.data})
-         staffs.push('全部')
-         this.state.list.map((item,index)=>{
-           if(staffs.indexOf(item.staffName)===-1){
-              staffs.push(item.staffName)
-           }
-         })
-         this.setState({staffs}) 
-      }else {
-        message.error('查看评论失败')
-      }
+  // getListDate =async()=>{//查看所有评论接口
+  //   let { staffs}= this.state
+  //   api.userList()
+  //   .then((res)=>{
+  //     if(res.code===0){
+  //        this.setState({list:res.data})
+  //        staffs.push('全部')
+  //        this.state.list.forEach((item,index)=>{
+  //            if(staffs.indexOf(item.staffName)===-1){
+  //             staffs.push(item.staffName)
+  //          }
+  //        })
+  //        this.setState({staffs}) 
+  //     }else {
+  //       message.error('查看评论失败')
+  //     }
+  //   })
+  // }
+   //--------------------------导出到EXCEL文档-----------------------------------
+   export=async()=>{
+      let thead=['用户上传的图片','_id','用户名','用户评论','用户评分','评论摄影师','评论时间','上传图片数量']
+      api.userList().then((data,index)=>{
+        let code =data.code
+        if(code){ return message.error('导出失败')}
+        let list=(data.data)
+        let table= list.map((item,index)=>{
+        let arr=[]
+        for(var key in item){//取到里面的key值 更加key值做判断
+          let value=item[key]
+          if (key === 'createTime'){
+            let time = new Date(Number(item[key]))
+            let year = time.getFullYear()
+            let month = time.getMonth() + 1
+            let date = time.getDate()
+            value = `${year}/${month}/${date}`
+          }
+          if(key === '__v'){
+            value = item['url'].length
+          }
+          if(key==='url'){
+            if(item[key].length===0){
+               value='用户未上传图片'
+            }
+            else{
+              value=''
+              item[key].forEach((i)=>{
+                value += value +baseUrl+ i +' | '
+              })
+            }
+          }
+          arr.push(value)
+        }
+        return arr
+      })
+      table.unshift(thead)
+      let ws = XLSX.utils.aoa_to_sheet(table);
+      let wb = XLSX.utils.book_new() // 创建工作薄
+      XLSX.utils.book_append_sheet(wb, ws)
+      XLSX.writeFile(wb, '客户评论.xlsx')
+      message.success('导出成功')
     })
-  }
-   //--------------------------分页查询--------------------------------
+    }
+   //--------------------------初始全部评论分页查询--------------------------------
     Bypage =()=>{
       let {page,pageSize}  = this.state
       api.Bypage({page,pageSize})
@@ -265,13 +268,13 @@ class how extends Component {
           page,pageSize})
       })
    }
-  
   //---------------------------------根据数据渲染页面------------------------------------
   render() {
     let {list,allPage,pageSize,page,columns,staffs} = this.state
     return (
       <div className={s.how} >
          <Card title='用户评论' style={{textAlign:"center"}}>
+         {/* -------------------------------下拉框的select-------------------------------- */}
           <span>得到摄影师所有评价</span>
          <Select
           showSearch
@@ -283,13 +286,17 @@ class how extends Component {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
+          {/* ------------------------根据数据生成option标签----------------------------------- */}
           {
             staffs.map((item,index)=>{
               return (<Option  key={index}value={item}>{item}</Option>)
             })
           }
         </Select>
-       
+        <Button className={s.excel} onClick={this.export} type="primary" icon={<DownloadOutlined />}>
+          导出表格到EXCEL
+        </Button>
+          {/* --------------------------主表格内容----------------------------------------------- */}
          <Table 
           className={s.table}
           style={{height:400,textAlign:"center"}}
@@ -298,11 +305,11 @@ class how extends Component {
           scroll={{y:300,x:950}}
           dataSource={list}                            
           columns={columns} />
-        
+          {/* -------------------------------分页器----------------------------------------------- */}
           <Pagination className={s.pagination} hideOnSinglePage='true' Current={page} total={allPage} pageSize={pageSize} 
-          onChange={(page)=>{
+          onChange={(page)=>{//点击页码数触发的函数
           this.setState({page},()=>{
-            this.judgeSituation(this.state.kw)
+            this.judgeSituation(this.state.kw,page)
           })
         }}
         />
