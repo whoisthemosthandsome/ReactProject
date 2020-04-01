@@ -26,7 +26,7 @@ const PicAdd = LoadAble(() => import('./pages/Pic/PicAdd'))
 const PicUpdate = LoadAble(() => import('./pages/Pic/PicUpdate'))
 //数据统计列表
 const Look = LoadAble(() => import('./pages/echart/echart'))
-
+const TokenModel = LoadAble(() => import('./component/TokenModel'))
 
 function App() {
   return (
@@ -57,6 +57,7 @@ function App() {
             )
           }}/>
         </Switch>
+        <TokenModel></TokenModel>
       </HashRouter>  
       </div>
   );

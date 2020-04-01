@@ -178,8 +178,8 @@ class PicList extends Component {
   getListData = async () => {
     this.setState({spinning: true, showSizeChanger: true}) // 加载中动画显示
     let { page, pageSize } = this.state
-    let {code, msg , list, count} = await picApi.getByPage({ page, pageSize }) // 查询请求
-    if(code){ return message.error(msg) } // 查询失败
+    let {code, list, count} = await picApi.getByPage({ page, pageSize }) // 查询请求
+    if(code){ return false } // 查询失败
     // 当前显示页内容全部删除 重新加载页面 显示前一页
     if (list.length === 0) { 
       let page = this.state.page
@@ -252,7 +252,7 @@ class PicList extends Component {
     this.getListData() // 初始化客样照列表
     this.setState({function: this.getListData}) // 分页点击处理方法设置为分页查询
     let { code, data } = await picApi.getphp() // 摄影师列表请求
-    if (code) {return message.error('获取摄影师列表失败, 请重试')} // 请求失败
+    if (code) {return false} // 请求失败
     data.unshift({_id: '全部', phpName: '全部'}) // 添加全部摄影师选项
     this.setState({photers: data}) // 请求成功初始化摄影师列表
   }
