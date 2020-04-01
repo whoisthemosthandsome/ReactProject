@@ -139,10 +139,15 @@ class PicList extends Component {
     this.setState({function: this.search}) // 分页点击处理方法设置为关键词查询
     let { code, msg , list, count } = await picApi.getByKw({kw}) // 搜索请求
     if(code){ return message.error(msg) } // 查询失败
-    if (list.length === 0) {  message.warn('请输入其他关键词')} // 查询结果为空
+    if (list.length === 0 && !this.state.searchReurison) {  message.warn('请输入其他关键词')} // 查询结果为空
     list = this.pagination(list) // 分页处理
-    this.setState({list, count}) // 查询成功
-    this.setState({spinning: false}) // 加载中动画隐藏
+    let {page} = this.state
+    if(list.length === 0 && page >1) { // 该分页内容为空
+      page--
+      this.setState({page, searchReurison:true})
+      return this.search()
+    }
+    this.setState({list, count, searchReurison: false, spinning: false}) // 查询成功 加载中动画隐藏
   }
   // 查询指定摄影师客样照
   getByPhoter = async () => {
@@ -156,15 +161,19 @@ class PicList extends Component {
     this.setState({function: this.getByPhoter}) // 分页点击处理方法设置为摄影师查询
     let { code, msg , list, count } = await picApi.getByPhpId(photer)
     if(code){ return message.error(msg) } // 查询失败
-    if(list.length === 0){ message.warn('暂无该摄影师客样照') } // 返回列表为空
+    if(list.length === 0 && !this.state.phpReurison){ message.warn('暂无该摄影师客样照') } // 返回列表为空
     list = this.pagination(list) // 分页处理
-    this.setState({list, count}) // 查询成功
-    this.setState({spinning: false}) // 加载中动画隐藏
+    let {page} = this.state
+    if(list.length === 0 && page >1) { // 该分页内容为空
+      page--
+      this.setState({page,phpReurison:true})
+      return this.getByPhoter()
+    }
+    this.setState({list, count, phpReurison: false, spinning: false}) // 查询成功 加载中动画隐藏
   }
   // 分页
   pagination (data) {
     let arr = []
-    this.setState({page: 1})
     let { page, pageSize } = this.state
     let skip = (page -1) * pageSize
     let limit = page * pageSize
@@ -182,14 +191,15 @@ class PicList extends Component {
     if(code){ return false } // 查询失败
     // 当前显示页内容全部删除 重新加载页面 显示前一页
     if (list.length === 0) { 
-      let page = this.state.page
-      if (page === 1) { this.setState({list, count});message.warn('暂无数据'); return this.setState({spinning: false}) }
-      page--
-      this.setState({page})
-      this.getListData()
+      if (page === 1) { // 当前显示页为第一页
+        message.warn('暂无数据') 
+      } else { // 当前显示页不为第一页 显示前一页
+        page--
+        this.setState({page})
+        return this.getListData()
+      }
     }
-    this.setState({list, count}) // 查询成功
-    this.setState({spinning: false}) // 加载中动画隐藏
+    this.setState({list, count, spinning: false}) // 查询成功 加载中动画隐藏
   }
   // 导出excel
   export = async () => {

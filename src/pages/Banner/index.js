@@ -58,6 +58,7 @@ class Banner extends Component {
     this.setState({spinning: true}) // 开启加载中动画
     let { code, list } = await bannerApi.get()
     if (code) { return false }
+    if (list.length === 0) { message.warn('暂无数据') }
     list.reverse() // 翻转数组 最新添加的显示在前面
     // 分页
     let arr = []
@@ -67,6 +68,12 @@ class Banner extends Component {
     if (limit > list.length) {limit = list.length}
     for (let i = skip; i < limit; i++) {
       arr.push(list[i])
+    }
+    // 当前显示页全部删除 重新加载页面 显示前一页
+    if (arr.length === 0 && page > 1) { 
+      page--
+      this.setState({page})
+      return this.getList()
     }
     let count = list.length // 总条数
     this.setState({list: arr, count})
