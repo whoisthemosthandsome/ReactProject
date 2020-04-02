@@ -30,13 +30,15 @@ export default class Admin extends Component {
     </Sider>
     
     <Layout >
-      <Header style={{background:'red'}} >这里是头部 <Button onClick={()=>{
+      <Header style={{background:'white'}} > <Button onClick={()=>{
         console.log(this)
         // this.props.history.replace('/login')
       // let location=(window.location.href).split('/login')[0]
       window.location.href='/login'
         localStorage.setItem('token','')
-      }}>退出登录</Button></Header>
+      }}>退出登录</Button>
+      
+      </Header>
       <Content >
         <div  >
         <HashRouter>
@@ -48,7 +50,7 @@ export default class Admin extends Component {
          {this.props.children}
         </div>
       </Content>
-      <Footer >Ant Design ©2018 Created by Ant UED</Footer>
+      <Footer style={{textAlign:'center'}}>金夫人</Footer>
     </Layout>
   </Layout>
   )

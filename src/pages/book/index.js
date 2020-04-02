@@ -90,9 +90,9 @@ class admins extends Component {
         this.setState({php:result.data})
         let res = await api.getuser()
         this.setState({user:res.list})
-        this.setState = (state, callback) => {
-            return false
-        }
+        // this.setState = (state, callback) => {
+        //     return false
+        // }
     
         // let {_id,phpName} = result
         // console.log(result,this.state.php,res)

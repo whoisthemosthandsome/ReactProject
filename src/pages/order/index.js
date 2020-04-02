@@ -116,9 +116,9 @@ class admins extends Component {
         let resu = await api.getpic()
         // console.log(resu)
         this.setState({pic:resu.list})
-        this.setState = (state, callback) => {
-            return false
-        }
+        // this.setState = (state, callback) => {
+        //     return false
+        // }
         // console.log(this.state.pic)
     }
     //添加用户操作
@@ -140,6 +140,9 @@ class admins extends Component {
         }
         message.success("添加用户成功")
         this.getInfo()
+        this.setState({
+            modal: false,
+            }); 
     }
     //  删除用户
     del=async(_id)=>{
@@ -153,9 +156,12 @@ class admins extends Component {
     }
     //控制添加模态框的显影
     model=()=>{
+        console.log(1)
+        console.log(this.state.modal)
         this.setState({
         modal: true,
         });
+        console.log(this.state.modal)
     }
     //添加
     handleOk = e => {
