@@ -73,7 +73,10 @@ class PicAdd extends Component {
   getPhpTypeList = async (_id) => {
     let {code, data} = await picApi.phpfindone(_id)
     if (code) { return message.error('获取摄影类型失败') }
-    let phpTypes = data.phpTitle.split('/')
+    let phpTypes = ['暂无摄影类型']
+    if(data.phpTitle){
+      phpTypes = data.phpTitle.split('/')
+    }
     this.setState({phpTypes, phpType: '请选择'})
   }
   // 获取摄影师列表

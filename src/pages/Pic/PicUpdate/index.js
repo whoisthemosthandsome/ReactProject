@@ -26,7 +26,8 @@ class PicUpdate extends Component {
     like: '', // 点赞
     states: '', // 发布状态
     photer: '', // 摄影师
-    phpType: '', // 摄影类型
+    phpType: '请选择', // 摄影类型
+    phpTypes: [], // 摄影类型列表
     imgsBeforeUpdate: [], // 修改前图片路径
     imgsChange: false, // 图片是否修改
     timer: '', // 返回首页计时器
@@ -35,6 +36,7 @@ class PicUpdate extends Component {
   // 上传客样照文本
   onFinish = async () =>{
     if (this.state.photer === '摄影师已离职') {return message.error('请选择摄影师')}
+    if (this.state.phpType === '请选择') { return message.error('请选择摄影类型') }
     let files = this.refs.files.files // 图片对象
     if (files.length !== 0) { await this.upload(); this.setState({imgsChange: true}) } // 上传图片
     let { _id, title, desc, imgs, look, like, states, photer, phpType, imgsChange, imgsBeforeUpdate } = this.state
@@ -87,11 +89,24 @@ class PicUpdate extends Component {
     let { title,desc,look,like,imgs,phpType,states } = list // 解构修改前数据
     // 摄影师id
     let photer = '摄影师已离职' // 摄影师集合中该摄影师已删除
+    
     if (list.photer.length !== 0) { // 摄影师集合中该摄影师存在
       photer = list.photer[0]._id
+      this.getPhpTypeList(photer)
+      this.setState({phpType})
     }
     // 设置修改前数据
-    this.setState({ title,desc,look,like,photer,phpType,states,imgs,imgsBeforeUpdate:imgs, showImgs: imgs })
+    this.setState({ title,desc,look,like,photer,states,imgs,imgsBeforeUpdate:imgs, showImgs: imgs })
+  }
+  // 摄影类型列表
+  getPhpTypeList = async (_id) => {
+    let {code, data} = await picApi.phpfindone(_id)
+    if (code) { return message.error('获取摄影类型失败') }
+    let phpTypes = ['暂无摄影类型']
+    if(data.phpTitle){
+      phpTypes = data.phpTitle.split('/')
+    }
+    this.setState({phpTypes})
   }
   componentDidMount = async () => {
     // 获取摄影师列表
@@ -102,7 +117,7 @@ class PicUpdate extends Component {
     this.getinitData()
   }
   render() {
-    let { showImgs, photers, photer, title, desc, look, like, phpType, timer, continueBtn, states } = this.state
+    let { showImgs, photers, photer, title, desc, look, like, phpType, phpTypes, timer, continueBtn, states } = this.state
     return (
       <div>
         <Card title='客样照修改'>
@@ -124,7 +139,9 @@ class PicUpdate extends Component {
             </Form.Item>
             <Form.Item label="摄影师">
               <Select value={photer} onChange={(value)=>{
-                this.setState({photer: value})
+                this.setState({photer: value}, ()=>{
+                  this.getPhpTypeList(value) // 获取对应摄影师摄影类型
+                })
               }}>
                 {
                   photers.map((item, index) => {
@@ -134,10 +151,22 @@ class PicUpdate extends Component {
                 
               </Select>
             </Form.Item>
-            <Form.Item label="摄影类型">
-              <Input autoComplete='off' value={phpType} onChange={(e)=>{
-                this.setState({phpType: e.target.value})
-              }}/>
+            <Form.Item label="摄影类型" rules={[{required: true}]}>
+              <Select id='phpType' value={phpType}
+              onClick={()=>{
+                if (phpTypes.length === 0) {
+                  message.warn('请先选择摄影师')
+                }
+              }}
+              onChange={(phpType)=>{this.setState({phpType})}}
+              >
+                {
+                  phpTypes.map((item, index) => {
+                    return(<Select.Option value={item} key={index}>{item}</Select.Option>)
+                  })
+                }
+                
+              </Select>
             </Form.Item>
             <Form.Item label="发布状态">
               <Select value={states} onChange={(value)=>{ this.setState({states: value}) }}>

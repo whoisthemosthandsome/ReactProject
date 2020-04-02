@@ -1,10 +1,10 @@
 .box{
   display: flex;
   justify-content: center;
-  padding-top: 20px;
+  position: relative;
 }
 .card{
-  width: 95%;
+  width: 100%;
 }
 .selUrl{
   color: lightblue;
@@ -19,8 +19,6 @@
   .btn{
     margin: 0 10px 10px 0;
   }
-  
-
   .right{
     display: flex;
     .count{
@@ -38,7 +36,16 @@
     }
   }
 }
-
+.dataBox p{
+  width: 100%;
+  margin-bottom: .01rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  justify-content: space-between;
+}
 
 @media screen and (max-width: 1030px) {
   .left{
