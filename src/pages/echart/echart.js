@@ -65,7 +65,7 @@ class Echarts extends Component {
       let {option} = this.state
     return ( 
       <div>
-       <Card  title="折线图" >
+       <Card  title="柱状图" style={{textAlign:"center"}}>
         <ReactEcharts option={option} style={{background:'light-blue'}}></ReactEcharts>
        </Card>
       </div>
