@@ -8,11 +8,17 @@ class login extends Component {
   onFinish =async(values) => {
     // console.log('Received values of form: ', values); 
     let {userName,passWord} = values
-    api.login({userName,passWord}).then((res)=>{
+    // console.log({userName,passWord})
+    api.login({userName,passWord})
+    .then((res)=>{
       localStorage.setItem('token',res.token)
-      message.success('登录成功，3s后跳转首页',3,()=>{
-        this.props.history.replace('/admin')
-      })
+      // console.log(res)
+      if(res.code == 0){
+        message.success('登录成功，3s后跳转首页',3,()=>{
+          this.props.history.replace('/admin')
+        })
+      }
+      else{ message.error('输入有误请重试')}
     })
     .catch((err)=>{
       message.error('输入有误请重试')

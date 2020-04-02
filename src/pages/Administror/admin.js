@@ -165,7 +165,7 @@ class admins extends Component {
     });
   };
   render() {
-    let {dataSource,columns ,userName,passWord,leavel} = this.state
+    let {dataSource,columns ,userName,} = this.state
     // console.log(userName,passWord,leavel)
     return (
       <div className={s.card}>

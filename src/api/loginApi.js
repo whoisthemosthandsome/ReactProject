@@ -1,9 +1,9 @@
 import axios from '../ultils/index.js'
 import baseUrl from '../ultils/baseUrl'
 class api {
-  login({obj}){
+  login(obj){
     let url = baseUrl + '/login/getone'
-    return axios.post(url,{obj})
+    return axios.post(url,obj)
   }
   add(obj){
     let url = baseUrl +'/login/add'
