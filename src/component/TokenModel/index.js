@@ -27,7 +27,8 @@ class TokenModal extends Component {
          <Card  title='token无效' style={ { width:'300px',height:"300px",textAlign:'center'} }>
            当前token无效请重新登录 
            <Button onClick={()=>{
-             console.log(this)
+            //  console.log(this)
+              localStorage.setItem('token',' ')
              this.props.changeTokenModal(false)
              this.props.history.replace('/login')
            }}>GO LOGIN </Button>
