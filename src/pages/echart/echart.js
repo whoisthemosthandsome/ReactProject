@@ -35,9 +35,7 @@ class Echarts extends Component {
     let {xAis,yAxis} = this.state
     api.Analyze()
     .then((res)=>{
-       // this.setState({res.data:list})
-      // console.log(res.data)
-       res.data.foreach((item,index)=>{
+       res.data.forEach((item,index)=>{
           xAis.push(item.phpName)
           yAxis.push(item.phpSatisfaction)
        })
@@ -67,7 +65,7 @@ class Echarts extends Component {
       let {option} = this.state
     return ( 
       <div>
-       <Card  title="折线图" >
+       <Card  title="柱状图" style={{textAlign:"center"}}>
         <ReactEcharts option={option} style={{background:'light-blue'}}></ReactEcharts>
        </Card>
       </div>

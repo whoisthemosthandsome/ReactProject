@@ -39,10 +39,12 @@ function App() {
           <Route path='/login' component={Login}/>
           <Route path='/reg' component={Reg}/>
           <Route path='/update' component={Update}/>
+          
           {/* <Route path='/admin' component={Admin}/> */}
           <Route  path='/admin' render={()=>{
             return(
               <Admin>
+                <Route path='/admin/index' component={Look}/>
                 <Route path='/admin/admin' component={AdminInfo}></Route>
                 <Route path='/admin/user/how' component={How}/>
                 <Route path='/admin/banner' component={Banner}></Route>
@@ -52,7 +54,7 @@ function App() {
                 <Route path='/admin/user/info' component={UserInfo}></Route>
                 <Route path='/admin/user/order' component={Order}></Route>
                 <Route path='/admin/picUpdate/:_id' component={PicUpdate}></Route>
-                <Route path='/admin/look' component={Look}></Route> 
+                {/* <Route path='/admin/look' component={Look}></Route>  */}
               </Admin>
             )
           }}/>

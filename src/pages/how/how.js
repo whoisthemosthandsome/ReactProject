@@ -131,7 +131,6 @@ class how extends Component {
     let {pageSize} = this.state
     api.byKw(kw,page,pageSize)
     .then((data)=>{
-      console.log(kw,111,data)
       this.setState({
         list:data.list,
         allPage:data.allCount,
@@ -306,7 +305,7 @@ class how extends Component {
           dataSource={list}                            
           columns={columns} />
           {/* -------------------------------分页器----------------------------------------------- */}
-          <Pagination className={s.pagination} hideOnSinglePage='true' Current={page} total={allPage} pageSize={pageSize} 
+          <Pagination showQuickJumper  className={s.pagination} hideOnSinglePage='true' Current={page} total={allPage} pageSize={pageSize} 
           onChange={(page)=>{//点击页码数触发的函数
           this.setState({page},()=>{
             this.judgeSituation(this.state.kw,page)
