@@ -81,10 +81,10 @@ export default [
       },
     ]
   },
-  {
-    key:'look',
-    title:'数据统计',
-    icon:'sheet',
-    path:'/admin/look'
-  }
+  // {
+  //   key:'look',
+  //   title:'数据统计',
+  //   icon:'sheet',
+  //   path:'/admin/look'
+  // }
 ]
