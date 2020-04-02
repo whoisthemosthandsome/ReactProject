@@ -43,10 +43,10 @@ class App extends Component{
             <Route path='/login' component={Login}/>
             <Route path='/reg' component={Reg}/>
             <Route path='/update' component={Update}/>
-            {/* <Route path='/admin' component={Admin}/> */}
             <Route  path='/admin' render={()=>{
               return(
                 <Admin>
+                  <Redirect exact from='/admin' to='/admin/index' ></Redirect>  
                   <Route path='/admin/index' component={Look}></Route> 
                   <Route path='/admin/admin' component={AdminInfo}></Route>
                   <Route path='/admin/user/how' component={How}/>
