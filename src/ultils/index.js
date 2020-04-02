@@ -17,7 +17,7 @@ axios.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
   let {code,msg} =response.data 
-  console.log('响应拦截器',code,msg)
+  // console.log('响应拦截器',code,msg)
   if(code === 402){
     // token失效
     let action = actionCreator.changeTokenModal(true)
