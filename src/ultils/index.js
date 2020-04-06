@@ -20,8 +20,8 @@ axios.interceptors.response.use(function (response) {
   // console.log('响应拦截器',code,msg)
   if(code === 402){
     // token失效
-    let action = actionCreator.changeTokenModal(true)
-    store.dispatch(action)
+    // let action = actionCreator.changeTokenModal(true)
+    // store.dispatch(action)
   }
   return response.data;
 }, function (error) {
